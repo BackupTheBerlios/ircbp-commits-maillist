@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [ircbp-commits] IRCBP -  r54 - framework/trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/ircbp-commits/2004-December/index.html" >
+   <LINK REL="made" HREF="mailto:ircbp-commits%40lists.berlios.de?Subject=Re%3A%20%5Bircbp-commits%5D%20IRCBP%20-%20%20r54%20-%20framework/trunk&In-Reply-To=%3C200412051157.iB5BvMCO029122%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   
+   <LINK REL="Next"  HREF="000050.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[ircbp-commits] IRCBP -  r54 - framework/trunk</H1>
+    <B>nigelj at berlios.de</B> 
+    <A HREF="mailto:ircbp-commits%40lists.berlios.de?Subject=Re%3A%20%5Bircbp-commits%5D%20IRCBP%20-%20%20r54%20-%20framework/trunk&In-Reply-To=%3C200412051157.iB5BvMCO029122%40sheep.berlios.de%3E"
+       TITLE="[ircbp-commits] IRCBP -  r54 - framework/trunk">nigelj at berlios.de
+       </A><BR>
+    <I>Sun Dec  5 12:57:22 CET 2004</I>
+    <P><UL>
+        
+        <LI>Next message: <A HREF="000050.html">[ircbp-commits] IRCBP -  r55 - framework/trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#49">[ date ]</a>
+              <a href="thread.html#49">[ thread ]</a>
+              <a href="subject.html#49">[ subject ]</a>
+              <a href="author.html#49">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: nigelj
+Date: 2004-12-05 12:57:10 +0100 (Sun, 05 Dec 2004)
+New Revision: 54
+
+Modified:
+   framework/trunk/CHANGELOG
+   framework/trunk/ircbp.py
+Log:
+NJ - 05/12/04 - Updating the newline handling in the buffer thanks to bdash in #newzealand on freenode ;)
+
+Modified: framework/trunk/CHANGELOG
+===================================================================
+--- framework/trunk/CHANGELOG	2004-11-16 02:27:13 UTC (rev 53)
++++ framework/trunk/CHANGELOG	2004-12-05 11:57:10 UTC (rev 54)
+@@ -62,3 +62,4 @@
+ NJ - 16/11/04 - Add mysql table create file...
+ NJ - 16/11/04 - Somehow an IF statement got replaced with &quot;hey&quot; so it wouldn't work :(
+ NJ - 16/11/04 - After advise all the tabs have being removed
++NJ - 05/12/04 - Updating the newline handling in the buffer thanks to bdash in #newzealand on freenode ;)
+
+Modified: framework/trunk/ircbp.py
+===================================================================
+--- framework/trunk/ircbp.py	2004-11-16 02:27:13 UTC (rev 53)
++++ framework/trunk/ircbp.py	2004-12-05 11:57:10 UTC (rev 54)
+@@ -152,13 +152,30 @@
+ irclogin()
+ sendnickserv()
+ dojoins()
+-
++#
++#while (1):
++##    buffer = IRC.recv(1024)
++#    buffer = ''
++#    while (1):
++#        buffer += IRC.recv(1024)
++#        if '\n' in buffer:
++#            msg, buffer = buffer.split('\n', 1)
++#            yield msg
++buffer = ''
+ while (1):
+-    buffer = IRC.recv(1024)
++    buffer += IRC.recv(1024)
++    
++    if '\n' not in buffer:
++        continue
+ 
+-    msg = string.split(buffer)
+-    print buffer,
++    msg, buffer = buffer.split('\n', 1)
+ 
++    
++
++#    msg = string.split(buffer)
++#    print buffer,
++    print msg,
++
+     if msg[0] == &quot;PING&quot;: #check if server have sent ping command
+         irccommand(&quot;PONG %s&quot; % msg[1]) #answer with pong as per RFC 1459
+     if msg[1] == 'PRIVMSG' and msg[2] == ircbpconfig.NICKNAME:
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	
+	<LI>Next message: <A HREF="000050.html">[ircbp-commits] IRCBP -  r55 - framework/trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#49">[ date ]</a>
+              <a href="thread.html#49">[ thread ]</a>
+              <a href="subject.html#49">[ subject ]</a>
+              <a href="author.html#49">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/ircbp-commits">More information about the ircbp-commits
+mailing list</a><br>
+</body></html>

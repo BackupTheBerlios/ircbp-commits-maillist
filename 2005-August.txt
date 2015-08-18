@@ -1,0 +1,30 @@
+From nigelj at berlios.de  Sat Aug 20 09:26:09 2005
+From: nigelj at berlios.de (nigelj at berlios.de)
+Date: Sat, 20 Aug 2005 09:26:09 +0200
+Subject: [ircbp-commits] IRCBP -  r78 - bot/trunk
+Message-ID: <200508200726.j7K7Q96E012807@sheep.berlios.de>
+
+Author: nigelj
+Date: 2005-08-20 09:25:00 +0200 (Sat, 20 Aug 2005)
+New Revision: 78
+
+Added:
+   bot/trunk/TODO
+Log:
+TODO List
+
+Added: bot/trunk/TODO
+===================================================================
+--- bot/trunk/TODO	2005-05-22 10:52:46 UTC (rev 77)
++++ bot/trunk/TODO	2005-08-20 07:25:00 UTC (rev 78)
+@@ -0,0 +1,7 @@
++For Release:
++
++Changes from framework:
++	Modulization
++	Clean Source
++	SQLite
++	Better functions + handlings
+
+
+

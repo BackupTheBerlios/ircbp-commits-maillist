@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [ircbp-commits] IRCBP -  r20 - framework/trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/ircbp-commits/2004-October/index.html" >
+   <LINK REL="made" HREF="mailto:ircbp-commits%40lists.berlios.de?Subject=Re%3A%20%5Bircbp-commits%5D%20IRCBP%20-%20%20r20%20-%20framework/trunk&In-Reply-To=%3C200410020723.i927NgSt012949%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000014.html">
+   <LINK REL="Next"  HREF="000017.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[ircbp-commits] IRCBP -  r20 - framework/trunk</H1>
+    <B>nigelj at berlios.de</B> 
+    <A HREF="mailto:ircbp-commits%40lists.berlios.de?Subject=Re%3A%20%5Bircbp-commits%5D%20IRCBP%20-%20%20r20%20-%20framework/trunk&In-Reply-To=%3C200410020723.i927NgSt012949%40sheep.berlios.de%3E"
+       TITLE="[ircbp-commits] IRCBP -  r20 - framework/trunk">nigelj at berlios.de
+       </A><BR>
+    <I>Sat Oct  2 09:23:42 CEST 2004</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000014.html">[ircbp-commits] IRCBP -  r19 - framework/trunk
+</A></li>
+        <LI>Next message: <A HREF="000017.html">[ircbp-commits] IRCBP -  r21 - framework/trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#15">[ date ]</a>
+              <a href="thread.html#15">[ thread ]</a>
+              <a href="subject.html#15">[ subject ]</a>
+              <a href="author.html#15">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: nigelj
+Date: 2004-10-02 09:23:39 +0200 (Sat, 02 Oct 2004)
+New Revision: 20
+
+Modified:
+   framework/trunk/CHANGELOG
+   framework/trunk/ircbp.py
+Log:
+NJ - 02/10/04 - Fixed bug #2556 (Comparing strings may fail because of case)
+
+Modified: framework/trunk/CHANGELOG
+===================================================================
+--- framework/trunk/CHANGELOG	2004-10-02 06:32:07 UTC (rev 19)
++++ framework/trunk/CHANGELOG	2004-10-02 07:23:39 UTC (rev 20)
+@@ -20,3 +20,4 @@
+ NJ - 02/10/04 - Importing Python module &quot;fnmatch&quot; - seems a nifty feature for wildcards etc
+ NJ - 02/10/04 - Deleting masks_ircbp.py - the system has some flaws etc.
+ NJ - 02/10/04 - Added new hostmask system, I KNOW ANOTHER ONE! - This one works a DREAM! - Uses fnmatch which I added to the imports, for a FS Matching checker it works SUPER well on plain text!
++NJ - 02/10/04 - Fixed bug #2556 (Comparing strings may fail because of case)
+
+Modified: framework/trunk/ircbp.py
+===================================================================
+--- framework/trunk/ircbp.py	2004-10-02 06:32:07 UTC (rev 19)
++++ framework/trunk/ircbp.py	2004-10-02 07:23:39 UTC (rev 20)
+@@ -43,13 +43,7 @@
+ # Introduce Users allowed to control &quot;powerful&quot; features
+ # Features include !quit, !topic, !kick, !cycle
+ 
+-#adduser('Nigel')
+-#adduser('Jorge-Kersh')
+-#adduser('ghetrino')
+-#adduser('pankey')
+-
+-
+-# Useage:
++# Usage:
+ # addmask('nick!<A HREF="https://lists.berlios.de/mailman/listinfo/ircbp-commits">ident at host</A>')
+ addmask('*!*@nigel.user')
+ addmask('*!*@ghettobp19.user')
+@@ -73,12 +67,6 @@
+ # Nickname for the IRC Bot to use
+ NICKNAME = 'IRCBP'
+ 
+-# Channel for the IRC Bot to join on connect (only channel at this moment that it will listen to
+-# Will be made into an array soon
+-#CHANNEL = '#IRCBP'
+-
+-
+-
+ ### CODE STARTS HERE ###
+ 
+ 
+@@ -148,7 +136,7 @@
+     print &quot;Starting the loop&quot;
+     while (len(channels)-1 &gt;= x):
+ 	print &quot;The loop is checking if we are in channels[&quot; + str(x) + &quot;] which is &quot; + channels[x]
+-	if channels[x] == CHKCHANNEL:
++	if string.upper(channels[x]) == string.upper(CHKCHANNEL):
+ 	    print &quot;We are in it!&quot;
+ 	    return 1
+ 	else:
+@@ -187,11 +175,11 @@
+ 	CHANNEL = msg[2]
+ 	if len(msg) &gt; 3:
+ 	    print &quot;We have a channel message! - W00T!!!&quot;
+-	    if string.lstrip(msg[3], ':') == '!say':
++	    if string.upper(string.lstrip(msg[3], ':')) == string.upper('!say'):
+ 		print &quot;We need to say something :P&quot;
+ 		message = ' '.join(msg[4:])
+ 		irccommand(&quot;PRIVMSG &quot; + CHANNEL + &quot; :&quot; + message)
+-	    if string.lstrip(msg[3], ':') == '!topic':
++	    if string.upper(string.lstrip(msg[3], ':')) == string.upper('!topic'):
+ 		if privcheck(HOSTMASK):
+ 		    if len(msg) &gt; 4:
+ 			print &quot;Changing Topic&quot;
+@@ -203,7 +191,7 @@
+ 		else:
+ 		    # They don't have privledges!
+ 		    irccommand(&quot;PRIVMSG &quot; + CHANNEL + &quot; :No privledges for this command!&quot;)
+-	    if string.lstrip(msg[3], ':') == '!kick':
++	    if string.upper(string.lstrip(msg[3], ':')) == string.upper('!kick'):
+ 	    # msg[4] = channel
+ 	    # msg[5] = nickname
+ 	    # msg[6-&gt;] = reason
+@@ -211,7 +199,7 @@
+ 		    print &quot;Someone's being bad, I need to kick!&quot;
+ 		    #if msg[4] != '':
+ 		    if len(msg) &gt; 4:
+-			if ischanmember(msg[4]):
++			if ischanmember(string.upper(msg[4])):
+ 			    irccommand(&quot;PRIVMSG &quot; + CHANNEL + &quot; :Oh someones being bad! LETS KICK!&quot;)
+ 			    if len(msg) &gt; 5:
+ 				#if msg[5] != '':
+@@ -231,7 +219,7 @@
+ 		else:
+ 		    # They don't have privledges!
+ 		    irccommand(&quot;PRIVMSG &quot; + CHANNEL + &quot; :No privledges for this command!&quot;)
+-	    if string.lstrip(msg[3], ':') == '!join':
++	    if string.upper(string.lstrip(msg[3], ':')) == string.upper('!join'):
+ 		print &quot;Joining a channel!&quot;
+ 		# Need to make sure that nick_name has in our privledged array
+ 		if privcheck(HOSTMASK):
+@@ -250,7 +238,7 @@
+ 			irccommand(&quot;PRIVMSG &quot; + CHANNEL + &quot; :Syntax error, correct syntax is: !join \x02&lt;channel&gt;\x02&quot;)
+ 		else:
+ 		    irccommand(&quot;PRIVMSG &quot; + CHANNEL + &quot; :No privledges for this command!&quot;)
+-	    if string.lstrip(msg[3], ':') == '!cycle':
++	    if string.upper(string.lstrip(msg[3], ':')) == string.upper('!cycle'):
+ 		if privcheck(HOSTMASK):
+ 		    print &quot;Cycling!&quot;
+ 		    irccommand(&quot;PRIVMSG &quot; + CHANNEL + &quot; :Okie Doke!&quot;)
+@@ -260,7 +248,7 @@
+ 		else:
+ 		    # Oh dear they cycle our bot!
+ 		    irccommand(&quot;PRIVMSG &quot; + CHANNEL + &quot; :No privledges for this command!&quot;)
+-	    if string.lstrip(msg[3], ':') == '!quit':
++	    if string.upper(string.lstrip(msg[3], ':')) == string.upper('!quit'):
+ 		if privcheck(HOSTMASK):
+ 		    print &quot;It's a quit&quot;
+ 		    irccommand(&quot;QUIT :Quit from &quot; + nick_name)
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000014.html">[ircbp-commits] IRCBP -  r19 - framework/trunk
+</A></li>
+	<LI>Next message: <A HREF="000017.html">[ircbp-commits] IRCBP -  r21 - framework/trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#15">[ date ]</a>
+              <a href="thread.html#15">[ thread ]</a>
+              <a href="subject.html#15">[ subject ]</a>
+              <a href="author.html#15">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/ircbp-commits">More information about the ircbp-commits
+mailing list</a><br>
+</body></html>

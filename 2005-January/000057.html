@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [ircbp-commits] IRCBP -  r62 - framework/trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/ircbp-commits/2005-January/index.html" >
+   <LINK REL="made" HREF="mailto:ircbp-commits%40lists.berlios.de?Subject=Re%3A%20%5Bircbp-commits%5D%20IRCBP%20-%20%20r62%20-%20framework/trunk&In-Reply-To=%3C200501060325.j063PMPt024426%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000056.html">
+   <LINK REL="Next"  HREF="000058.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[ircbp-commits] IRCBP -  r62 - framework/trunk</H1>
+    <B>nigelj at berlios.de</B> 
+    <A HREF="mailto:ircbp-commits%40lists.berlios.de?Subject=Re%3A%20%5Bircbp-commits%5D%20IRCBP%20-%20%20r62%20-%20framework/trunk&In-Reply-To=%3C200501060325.j063PMPt024426%40sheep.berlios.de%3E"
+       TITLE="[ircbp-commits] IRCBP -  r62 - framework/trunk">nigelj at berlios.de
+       </A><BR>
+    <I>Thu Jan  6 04:25:22 CET 2005</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000056.html">[ircbp-commits] IRCBP -  r61 - framework/trunk
+</A></li>
+        <LI>Next message: <A HREF="000058.html">[ircbp-commits] IRCBP -  r63 - / bot bot/trunk website/trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#57">[ date ]</a>
+              <a href="thread.html#57">[ thread ]</a>
+              <a href="subject.html#57">[ subject ]</a>
+              <a href="author.html#57">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: nigelj
+Date: 2005-01-06 04:25:00 +0100 (Thu, 06 Jan 2005)
+New Revision: 62
+
+Modified:
+   framework/trunk/CHANGELOG
+   framework/trunk/ircbpconfig.py
+Log:
+NJ - 06/01/05 - Changed _mysql to MySQLdb (<A HREF="http://sourceforge.net/projects/mysql-python/">http://sourceforge.net/projects/mysql-python/</A>)
+NJ - 06/01/05 - Spotted new mistake with my changelog entries, it's 05 now not 04 ;)
+
+
+
+Modified: framework/trunk/CHANGELOG
+===================================================================
+--- framework/trunk/CHANGELOG	2005-01-06 02:38:51 UTC (rev 61)
++++ framework/trunk/CHANGELOG	2005-01-06 03:25:00 UTC (rev 62)
+@@ -154,8 +154,10 @@
+ NJ - 07/12/04 - Implemented db-based channels and users to the bot.
+ NJ - 07/12/04 - Fixed comments in ircbpconfig.py (to make it clearer in the fact you only need to edit the SQL settings now).
+ BP - 07/12/04 - Fixed some spacing and such. Mostly code browsing since i need (and dont have) _mysql for the bot to work  =P
+-NJ - 06/01/04 - Modulized common functions into ircbpcommon.py
+-NJ - 06/01/04 - Added error handing to mysql (rough for now)
+-NJ - 06/01/04 - Moved socket stuff so not much is left in ircbp.py
+-NJ - 06/01/04 - Fixed missing comment in ircbpcommon.py
+-NJ - 06/01/04 - Fixed problem CHANGELOG (3rd time lucky hopefully)
++NJ - 06/01/05 - Modulized common functions into ircbpcommon.py
++NJ - 06/01/05 - Added error handing to mysql (rough for now)
++NJ - 06/01/05 - Moved socket stuff so not much is left in ircbp.py
++NJ - 06/01/05 - Fixed missing comment in ircbpcommon.py
++NJ - 06/01/05 - Fixed problem CHANGELOG (3rd time lucky hopefully)
++NJ - 06/01/05 - Changed _mysql to MySQLdb (<A HREF="http://sourceforge.net/projects/mysql-python/">http://sourceforge.net/projects/mysql-python/</A>)
++NJ - 06/01/05 - Spotted new mistake with my changelog entries, it's 05 now not 04 ;)
+
+Modified: framework/trunk/ircbpconfig.py
+===================================================================
+--- framework/trunk/ircbpconfig.py	2005-01-06 02:38:51 UTC (rev 61)
++++ framework/trunk/ircbpconfig.py	2005-01-06 03:25:00 UTC (rev 62)
+@@ -26,7 +26,7 @@
+ 
+ # Don't edit the following &quot;import&quot; line!
+ 
+-import _mysql
++import MySQLdb
+ 
+ 
+ 
+@@ -49,7 +49,7 @@
+ 
+ # Connecting...
+ 
+-db=_mysql.connect(host=sqlconfig.SQLHOST, user=sqlconfig.SQLUSER, passwd=sqlconfig.SQLPASS, db='IRCBP', port=sqlconfig.SQLPORT)
++db=MySQLdb.connect(host=sqlconfig.SQLHOST, user=sqlconfig.SQLUSER, passwd=sqlconfig.SQLPASS, db='IRCBP', port=sqlconfig.SQLPORT)
+ 
+ # Main configuration!
+ 
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000056.html">[ircbp-commits] IRCBP -  r61 - framework/trunk
+</A></li>
+	<LI>Next message: <A HREF="000058.html">[ircbp-commits] IRCBP -  r63 - / bot bot/trunk website/trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#57">[ date ]</a>
+              <a href="thread.html#57">[ thread ]</a>
+              <a href="subject.html#57">[ subject ]</a>
+              <a href="author.html#57">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/ircbp-commits">More information about the ircbp-commits
+mailing list</a><br>
+</body></html>

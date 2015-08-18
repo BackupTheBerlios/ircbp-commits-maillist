@@ -1,0 +1,459 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [ircbp-commits] IRCBP -  r63 - / bot bot/trunk website/trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/ircbp-commits/2005-January/index.html" >
+   <LINK REL="made" HREF="mailto:ircbp-commits%40lists.berlios.de?Subject=Re%3A%20%5Bircbp-commits%5D%20IRCBP%20-%20%20r63%20-%20/%20bot%20bot/trunk%20website/trunk&In-Reply-To=%3C200501060347.j063lDXX029873%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000057.html">
+   <LINK REL="Next"  HREF="000059.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[ircbp-commits] IRCBP -  r63 - / bot bot/trunk website/trunk</H1>
+    <B>nigelj at berlios.de</B> 
+    <A HREF="mailto:ircbp-commits%40lists.berlios.de?Subject=Re%3A%20%5Bircbp-commits%5D%20IRCBP%20-%20%20r63%20-%20/%20bot%20bot/trunk%20website/trunk&In-Reply-To=%3C200501060347.j063lDXX029873%40sheep.berlios.de%3E"
+       TITLE="[ircbp-commits] IRCBP -  r63 - / bot bot/trunk website/trunk">nigelj at berlios.de
+       </A><BR>
+    <I>Thu Jan  6 04:47:13 CET 2005</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000057.html">[ircbp-commits] IRCBP -  r62 - framework/trunk
+</A></li>
+        <LI>Next message: <A HREF="000059.html">[ircbp-commits] IRCBP -  r64 - framework/trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#58">[ date ]</a>
+              <a href="thread.html#58">[ thread ]</a>
+              <a href="subject.html#58">[ subject ]</a>
+              <a href="author.html#58">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: nigelj
+Date: 2005-01-06 04:46:57 +0100 (Thu, 06 Jan 2005)
+New Revision: 63
+
+Added:
+   bot/
+   bot/branches/
+   bot/tags/
+   bot/trunk/
+   bot/trunk/CHANGELOG
+   bot/trunk/ircbpcommon.py
+   bot/trunk/ircbpconfig.py
+Removed:
+   bot/trunk/CHANGELOG
+   bot/trunk/ircbpcommon.py
+   bot/trunk/ircbpconfig.py
+Modified:
+   website/trunk/svn.php
+Log:
+Website Update:
+* Update SVN Information for bot and framework download URL's
+SVN Updates:
+* svn copy'ed framework/trunk to bot/trunk for the IRCbp Bot
+
+
+Copied: bot/trunk (from rev 59, framework/trunk)
+
+Deleted: bot/trunk/CHANGELOG
+===================================================================
+--- framework/trunk/CHANGELOG	2005-01-06 02:25:01 UTC (rev 59)
++++ bot/trunk/CHANGELOG	2005-01-06 03:46:57 UTC (rev 63)
+@@ -1,76 +0,0 @@
+-# Change Log - Format to be decided
+-# Dates are in GMT and in DD/MM/YY format
+-
+-NJ - 30/09/04 - Various work on core code.
+-NJ - 01/10/04 - Added quite a few comments to the source code.
+-NJ - 01/10/04 - Removed some old code + made the source format look prettier! (looks good on a 8-COL Tab Text Editor)
+-NJ - 01/10/04 - Added more if's to check that we are not tring to access non existant data!
+-NJ - 01/10/04 - Had some empty else's in the source, caused some runtime problems, fixed that.
+-NJ - 01/10/04 - Add some Privledge checking because well truth be told AppleBoy was starting to semi-annoy me by using the !kick command when I didn't want him to.  Will be replaced by Pankey's system soon.
+-NJ - 01/10/04 - Implementing Changelog and used SVN History to create past events.
+-NJ - 01/10/04 - Starting a system like the Privledge system to join Multiple Channels.
+-NJ - 01/10/04 - Channel System is done, needs lots of testing.  I think i'll leave programming at that for now.
+-NJ - 01/10/04 - Added !join, no !part yet.
+-NJ - 01/10/04 - Added privcheck call to: !topic, !quit and !cycle
+-NJ - 01/10/04 - Made syntax errors have a bit of bold.
+-NJ - 01/10/04 - Made !kick run as a multichannel system, e.g. !kick &lt;channel&gt; &lt;nick&gt; [messsage]
+-BP - 02/10/04 - Made authorization more secure
+-NJ - 02/10/04 - Added pankeys changelog entry for him
+-NJ - 02/10/04 - Fixed Bug #2557 (IndexError: list index out of range - KICK)
+-NJ - 02/10/04 - Importing Python module &quot;fnmatch&quot; - seems a nifty feature for wildcards etc
+-NJ - 02/10/04 - Deleting masks_ircbp.py - the system has some flaws etc.
+-NJ - 02/10/04 - Added new hostmask system, I KNOW ANOTHER ONE! - This one works a DREAM! - Uses fnmatch which I added to the imports, for a FS Matching checker it works SUPER well on plain text!
+-NJ - 02/10/04 - Fixed bug #2556 (Comparing strings may fail because of case)
+-NJ - 03/10/04 - Added more comments so that it's more spaced out where the !say commands are etc
+-NJ - 03/10/04 - Started to implement the ability to have multiple prefixes, sadly i realised that my way of checking will cause problems.  The call for it has being commented out and put back to the original but it is something we should look at making better in the future.
+-BP - 03/10/04 - Added a bash script to copy unix files to windows .txt format =)
+-BP - 03/10/04 - Added !part command...realized this ChangeLog is backwards...should be top with newest changes
+-NJ - 09/10/04 - Added the python interpreter line to top of ircbp.py
+-NJ - 09/10/04 - Made the configuration stuff bit better to look at!
+-NJ - 09/10/04 - Made some code more &quot;tidy&quot;
+-NJ - 09/10/04 - RELEASE - 0.1.0
+-NJ - 09/10/04 - Tag to /framework/tags/REL-0.1.0
+-NJ - 09/10/04 - Added a temporary README
+-NJ - 09/10/04 - Made REALNAME set by default to fix bug #2613 (Invalid IRC Parameters)
+-NJ - 10/10/04 - Made irclogin() much more simple
+-NJ - 10/10/04 - Added sendnickserv() so users can have their bot automatically identify to nickserv
+-NJ - 13/11/04 - Added remchan() to reverse addchan()
+-NJ - 13/11/04 - Added !list as a debugging tool (list channels the bot is on)
+-NJ - 13/11/04 - Fixed !part to fix bug #2614 (!part Parts the wrong channel)
+-NJ - 13/11/04 - Added ircbpconfig.py
+-NJ - 13/11/04 - All the &quot;lists&quot; (I call them arrays) are now held in the new module.
+-NJ - 13/11/04 - README fixed up.
+-NJ - 13/11/04 - Added svn:ignore *.pyc because we don't need to import compiled python modules into the repo)
+-NJ - 13/11/04 - Found a problem with all the commands, it was checking for NICKNAME instead of ircbpconfig.NICKNAME
+-NJ - 13/11/04 - Cleaned up some debug stuff I added when I was having trouble with the module.
+-NJ - 13/11/04 - Added &quot;DANCERMODE&quot; so we can seperate Dancer only behaviour.  Planning to do this for other IRCds.
+-NJ - 13/11/04 - Bot now supports DancerIRCd forwarding.  Fixes bug #2782 (Bot doesn't follow Dancer Forwarding)
+-NJ - 14/11/04 - Added new lines to ircbpconfig.py
+-NJ - 14/11/04 - Added checking for 'join-blocking' numerics
+-NJ - 14/11/04 - Made handling for 'join-blocking' numerics check if that was the last channel, if so it will quit cleaning fixing bug #2781 (Bot doesn't phase RAW messages)
+-NJ - 14/11/04 - Added the DancerIRCd 'join-blocking' numerics
+-NJ - 14/11/04 - Fixed some of the tabbing
+-NJ - 14/11/04 - Fix a TINY bug... (I added a '.' after a function and python didn't like it.
+-NJ - 14/11/04 - Made the bot rejoin when kicked.
+-NJ - 14/11/04 - Updated mktxt.sh (so it will make README.txt
+-NJ - 14/11/04 - Got rid of the .txt files as we can just mktxt them for releases (e.g. Windows users that are able to download source from SVN should be able to read these files via open with)
+-NJ - 14/11/04 - RELEASE - 0.1.1
+-NJ - 14/11/04 - Tag to /framework/tags/REL-0.1.1
+-NJ - 15/11/04 - Started implementing SQL to the bot.
+-NJ - 15/11/04 - Worked out a config table system
+-NJ - 15/11/04 - Implemented all the DB calls but have not yet got a NSPASSWD coloum in yet...
+-NJ - 16/11/04 - Add mysql table create file...
+-NJ - 16/11/04 - Somehow an IF statement got replaced with &quot;hey&quot; so it wouldn't work :(
+-NJ - 16/11/04 - After advise all the tabs have being removed
+-NJ - 05/12/04 - Updating the newline handling in the buffer thanks to bdash in #newzealand on freenode ;)
+-NJ - 05/12/04 - Finished updating the newline handling (it works perfectly) once again, THANK YOU BDASH!
+-NJ - 05/12/04 - Fix up !kick syntax error.
+-NJ - 06/12/04 - Added NSPASSWORD to SQL
+-NJ - 06/12/04 - Made a small optimization in ircbpconfig.py to incorporate the DB handling to end result into 1 line (instead of two) and only two varibles, looking for more to be made currently.
+-NJ - 06/12/04 - Remade create_config.sql (this time from phpMyAdmin).  Now also drops existing table (if any) so PLEASE watch out!
+-NJ - 06/12/04 - Limited SQL query to one result which should prevent problems.
+-NJ - 07/12/04 - 433 numeric now handled - means that it append a _ to ircbpconfig.NICKNAME and send a NICK command to the server until it is allowed
+-NJ - 07/12/04 - 376 numeric now handled - When the server gets the 376 (END OF MOTD) numeric it will THEN send Nickserv Identification and Join requested channels.
+-NJ - 07/12/04 - Implemented db-based channels and users to the bot.
+-NJ - 07/12/04 - Fixed comments in ircbpconfig.py (to make it clearer in the fact you only need to edit the SQL settings now).
+-BP - 07/12/04 - Fixed some spacing and such. Mostly code browsing since i need (and dont have) _mysql for the bot to work  =P
+
+Copied: bot/trunk/CHANGELOG (from rev 62, framework/trunk/CHANGELOG)
+
+Deleted: bot/trunk/ircbpcommon.py
+===================================================================
+--- framework/trunk/ircbpcommon.py	2005-01-06 02:25:01 UTC (rev 59)
++++ bot/trunk/ircbpcommon.py	2005-01-06 03:46:57 UTC (rev 63)
+@@ -1,119 +0,0 @@
+-#!/usr/bin/python
+-
+-#########################################################################################################
+-# (C) 2004 Nigel Jones, Brian Pankey and contributors to The IRC Bot Project, All Rights Reserved.	#
+-# Some Portions are copyright to Gian Mario Tagliaretti, portions of his code will be replaced shortly	#
+-#########################################################################################################
+-
+-# $Id$ #
+-
+-#################################################
+-# The main developers are:			#
+-#	Nigel Jones &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/ircbp-commits">nigelj at users.berlios.de</A>&gt;	#
+-#	Brian Pankey &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/ircbp-commits">pankey at users.berlios.de</A>&gt;	#
+-#						#
+-# Contributors names can be found in &quot;CREDITS&quot;	#
+-#						#
+-# Project Page is at:				#
+-# <A HREF="https://developer.berlios.de/projects/ircbp/">https://developer.berlios.de/projects/ircbp/</A>	#
+-#################################################
+-
+-#########################################################################################################
+-# This is currently held under the terms of the General Public License Version 2 which can be found at:	#
+-# <A HREF="http://www.gnu.org/licenses/gpl.txt">http://www.gnu.org/licenses/gpl.txt</A>									#
+-# GPL Document can also be found in the same directory as this file as &quot;LICENSE&quot;			#
+-#########################################################################################################
+-
+-import socket, string, sys, time, fnmatch
+-import ircbpconfig
+-
+-# This basic socket will provide 1 connection to an IRC Server, in future we can most likely make it into an array
+-# of sockets
+-IRC = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+-    
+-def sockcreate():
+-    #open a connection with the server
+-    IRC.connect((ircbpconfig.SERVER, ircbpconfig.PORT))
+-    
+-    #We need to see if we need to send a password, so here we go
+-    if ircbpconfig.SVRPASSWORD != &quot;&quot;:
+-        #Pass Required so lets send it!
+-        irccommand(&quot;PASS &quot; + ircbpconfig.SVRPASSWORD)
+-
+-    #IRC &quot;USER&quot; RFC says: &quot;USER Username Hostname Servername :Realname&quot;
+-    irccommand(&quot;USER %s %s %s :%s&quot; % (ircbpconfig.NICKNAME, ircbpconfig.NICKNAME, ircbpconfig.SERVER, ircbpconfig.REALNAME))
+-    irccommand(&quot;NICK &quot; + ircbpconfig.NICKNAME)
+-    
+-
+-#simple function to send data through the socket
+-def irccommand(command):
+-    IRC.send(command + '\n')
+-
+-def dojoins():
+-    print &quot;dojoins called&quot;
+-    x = 0
+-    print &quot;Starting the loop&quot;
+-    while (len(ircbpconfig.channels)-1 &gt;= x):
+-        print &quot;The loop is going to join the channel in ircbpconfig.channels[&quot; + str(x) + &quot;] which is &quot; + ircbpconfig.channels[x]
+-        irccommand(&quot;JOIN &quot; + ircbpconfig.channels[x])
+-        x = x+1
+-    print &quot;dojoins Complete!&quot;
+-
+-
+-def sendnickserv():
+-    if ircbpconfig.NSPASSWORD != &quot;&quot;: 
+-        irccommand(&quot;PRIVMSG NICKSERV :IDENTIFY &quot; + ircbpconfig.NSPASSWORD)
+-        time.sleep(10)
+-        
+- This function will check if a user is in the privledged[x] array
+-
+-def privcheck(USERHOSTTBC):
+-    print &quot;User PrivCheck Called&quot;
+-    x = 0
+-    print &quot;starting the loop&quot;
+-    while (len(ircbpconfig.privledged)-1 &gt;= x):
+-        print &quot;The data we got is: &quot; + USERHOSTTBC
+-        print &quot;The loop is checking ircbpconfig.privledged[&quot; + str(x) + &quot;] which is &quot; + ircbpconfig.privledged[x]
+-        if fnmatch.fnmatch(USERHOSTTBC,ircbpconfig.privledged[x]):
+-            print &quot;OMG MATCH!&quot;
+-            return 1
+-        else:
+-            x = x+1
+-            print &quot;NOT A MATCH!&quot;
+-    return 0
+-    print &quot;No Matches&quot;
+-
+-# This function will check if the channel is one the bot has joined
+-
+-def ischanmember(CHKCHANNEL):
+-    print &quot;ischanmember Called&quot;
+-    x = 0
+-    print &quot;Starting the loop&quot;
+-    while (len(ircbpconfig.channels)-1 &gt;= x):
+-        print &quot;The loop is checking if we are in ircbpconfig.channels[&quot; + str(x) + &quot;] which is &quot; + ircbpconfig.channels[x]
+-        if string.upper(ircbpconfig.channels[x]) == string.upper(CHKCHANNEL):
+-            print &quot;We are in it!&quot;
+-            return 1
+-        else:
+-            #Keep going!
+-            x = x+1
+-            print &quot;No match yet&quot;
+-    return 0
+-    print &quot;No matches&quot;
+-    
+-def remchan(CHANNEL):
+-    print &quot;remchan Called&quot;
+-    x = 0
+-    print &quot;Starting the loop&quot;
+-    while (len(ircbpconfig.channels)-1 &gt;= x):
+-        print &quot;The loop is checking if the channel is a match @ ircbpconfig.channels[&quot; + str(x) + &quot;] which is &quot; + ircbpconfig.channels[x]
+-        if string.upper(ircbpconfig.channels[x]) == string.upper(CHANNEL):
+-            print &quot;We are in it!&quot;
+-            del ircbpconfig.channels[x]
+-            return 1
+-        else:
+-            #Keep going!
+-            x = x+1
+-            print &quot;No match yet&quot;
+-    return 0
+-    print &quot;No matches&quot;
+\ No newline at end of file
+
+Copied: bot/trunk/ircbpcommon.py (from rev 61, framework/trunk/ircbpcommon.py)
+
+Deleted: bot/trunk/ircbpconfig.py
+===================================================================
+--- framework/trunk/ircbpconfig.py	2005-01-06 02:25:01 UTC (rev 59)
++++ bot/trunk/ircbpconfig.py	2005-01-06 03:46:57 UTC (rev 63)
+@@ -1,112 +0,0 @@
+-#!/usr/bin/python
+-
+-#########################################################################################################
+-# (C) 2004 Nigel Jones, Brian Pankey and contributors to The IRC Bot Project, All Rights Reserved.	#
+-# Some Portions are copyright to Gian Mario Tagliaretti, portions of his code will be replaced shortly	#
+-#########################################################################################################
+-
+-# $Id$ #
+-
+-#################################################
+-# The main developers are:			#
+-#	Nigel Jones &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/ircbp-commits">nigelj at users.berlios.de</A>&gt;	#
+-#	Brian Pankey &lt;<A HREF="https://lists.berlios.de/mailman/listinfo/ircbp-commits">pankey at users.berlios.de</A>&gt;	#
+-#						#
+-# Contributors names can be found in &quot;CREDITS&quot;	#
+-#						#
+-# Project Page is at:				#
+-# <A HREF="https://developer.berlios.de/projects/ircbp/">https://developer.berlios.de/projects/ircbp/</A>	#
+-#################################################
+-
+-#########################################################################################################
+-# This is currently held under the terms of the General Public License Version 2 which can be found at:	#
+-# <A HREF="http://www.gnu.org/licenses/gpl.txt">http://www.gnu.org/licenses/gpl.txt</A>									#
+-# GPL Document can also be found in the same directory as this file as &quot;LICENSE&quot;			#
+-#########################################################################################################
+-
+-# Don't edit the following &quot;import&quot; line!
+-
+-import _mysql
+-
+-
+-
+-class mysqlconfig:
+-    # EDIT THE FOLLOWING LINE TO THE NAME OF YOUR SQL HOST
+-    SQLHOST = 'localhost'
+-    # EDIT THE FOLLOWING LINE TO THE NAME OF YOUR SQL USER
+-    SQLUSER = 'IRCBP'
+-    # EDIT THE FOLLOWING LINE TO THE PASSWORD OF YOUR SQL USER
+-    SQLPASS = ''
+-    # EDIT THE FOLLOWING LINE TO THE PORT USED BY YOUR SQL SERVER
+-    SQLPORT = 3306
+-
+-    
+-# DO NOT EDIT ANYTHING MORE 
+-
+-# SQL Connection
+-
+-sqlconfig = mysqlconfig()
+-
+-# Connecting...
+-
+-db=_mysql.connect(host=sqlconfig.SQLHOST, user=sqlconfig.SQLUSER, passwd=sqlconfig.SQLPASS, db='IRCBP', port=sqlconfig.SQLPORT)
+-
+-# Main configuration!
+-
+-db.query(&quot;&quot;&quot;SELECT * from config LIMIT 0 , 1&quot;&quot;&quot;)
+-if db.errno() != 0:
+-    print &quot;MySQL has produced an error! Which is as follows:&quot;
+-    print db.errno() + &quot; &quot; + db.error()
+-    print &quot;Location of error:  Configuration Query&quot;
+-
+-configprops=db.use_result().fetch_row()
+-
+-# Channels we join!
+-
+-db.query(&quot;&quot;&quot;SELECT * from channels&quot;&quot;&quot;)
+-if db.errno() != 0:
+-    print &quot;MySQL has produced an error! Which is as follows:&quot;
+-    print db.errno() + &quot; &quot; + db.error()
+-    print &quot;Location of error:  Channels Query&quot;
+-    
+-prechannels=db.store_result()
+-channels=[c[0] for c in prechannels.fetch_row(prechannels.num_rows())]
+-
+-# Now from privledged users!
+-
+-db.query(&quot;&quot;&quot;SELECT * from users&quot;&quot;&quot;)
+-if db.errno() != 0:
+-    print &quot;MySQL has produced an error! Which is as follows:&quot;
+-    print db.errno() + &quot; &quot; + db.error()
+-    print &quot;Location of error:  Users Query&quot;
+-    
+-preprivs=db.store_result()
+-privledged=[c[0] for c in preprivs.fetch_row(prechannels.num_rows())]
+-
+-
+-# Bot Nickname and Realname (Must not be null) for the IRC Bot to use
+-    
+-NICKNAME = configprops[0][0]
+-REALNAME = configprops[0][1]
+-    
+-# Add your bots nickserv password here, if none leave blank!
+-
+-NSPASSWORD = configprops[0][2]
+-
+-# Server Connection Details
+-# In future this should be in a seperate file!
+-    
+-# IRC Server DNS Name OR IP
+-SERVER = configprops[0][3]
+-    
+-# Port IRC Server Listerns on
+-PORT = int(configprops[0][4])
+-
+-# Password for logining into the server (normally blank unless you have a special I:line)
+-SVRPASSWORD = configprops[0][5]
+-
+-# 1 if using a IRCd that you are connecting to is DancerIRCd (Freenode for example)
+-# 0 if not
+-DANCERMODE = int(configprops[0][6])
+-
+-
+
+Copied: bot/trunk/ircbpconfig.py (from rev 62, framework/trunk/ircbpconfig.py)
+
+Modified: website/trunk/svn.php
+===================================================================
+--- website/trunk/svn.php	2005-01-06 03:25:00 UTC (rev 62)
++++ website/trunk/svn.php	2005-01-06 03:46:57 UTC (rev 63)
+@@ -34,18 +34,8 @@
+     &lt;h3&gt;Introduction&lt;/h3&gt; 
+     &lt;p&gt; 
+     	The developers of IRCbp use SVN for the IRC Bot Project needs.  If you wish to download the latest source (that is yet to be released) please read on.
+-	&lt;/p&gt;&lt;p&gt;
++	&lt;/p&gt;
+   &lt;/div&gt;
+-  &lt;div class=&quot;story&quot;&gt;
+-    &lt;h3&gt; WARNING &lt;/h3&gt;
+-    &lt;p&gt;&lt;b&gt;
+-    	The SVN Repository is currently in a state where it will be a &quot;bad thing&quot; to use it in production as we are introducing a new module in it for testing.&lt;br&gt;&lt;br&gt;
+-	
+-	If you wish to take the risk please feel free to read below, or if you wish to download the 0.1.1 code read below and replace /framework/trunk for /framework/tags/REL-0.1.1
+-	
+-	ETA on /framework/trunk stability: UNKNOWN
+-    &lt;/b&gt;&lt;/p&gt;
+-  &lt;/div&gt;
+   &lt;div class=&quot;story&quot;&gt; 
+     &lt;h3&gt;First Time Access&lt;/h3&gt; 
+     &lt;p&gt;
+@@ -55,8 +45,11 @@
+ 	After downloading and building/installing the client software you need to make sure you have a reasonably new version of Python (we recommend 2.3.x) from &lt;a href=&quot;<A HREF="http://www.python.org">http://www.python.org</A>&quot;&gt;The Python Homepage&lt;/a&gt;
+     &lt;/p&gt;
+     &lt;p&gt;
+-	Software can then be downloaded by performing the following command:  &lt;br&gt;
+-		&quot;svn checkout <A HREF="svn://svn.berlios.de/ircbp/framework/trunk">svn://svn.berlios.de/ircbp/framework/trunk</A>&quot;
++	IRCbp Framework can be downloaded via SVN with:  &lt;br&gt;
++		&quot;svn checkout <A HREF="svn://svn.berlios.de/ircbp/framework/trunk">svn://svn.berlios.de/ircbp/framework/trunk</A>&quot; &lt;br&gt;
++	While the IRCbp Bot (which is work in progress) can be downloaded via SVN at: &lt;br&gt;
++		&quot;svn checkout <A HREF="svn://svn.berlios.de/ircbp/bot/trunk">svn://svn.berlios.de/ircbp/bot/trunk</A>&quot; &lt;br&gt;&lt;br&gt;
++	&lt;!--More information about the Framework and the Bot and their different uses can be found at &lt;a href=&quot;projectinfo.php&quot;&gt;Project Information&lt;/a&gt;--&gt;
+     &lt;/p&gt;
+   &lt;/div&gt;
+   &lt;div class=&quot;story&quot;&gt; 
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000057.html">[ircbp-commits] IRCBP -  r62 - framework/trunk
+</A></li>
+	<LI>Next message: <A HREF="000059.html">[ircbp-commits] IRCBP -  r64 - framework/trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#58">[ date ]</a>
+              <a href="thread.html#58">[ thread ]</a>
+              <a href="subject.html#58">[ subject ]</a>
+              <a href="author.html#58">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/ircbp-commits">More information about the ircbp-commits
+mailing list</a><br>
+</body></html>

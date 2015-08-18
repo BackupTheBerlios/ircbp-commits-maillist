@@ -1,0 +1,208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [ircbp-commits] IRCBP -  r53 - in website/trunk: . _notes images/ic includes
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/ircbp-commits/2004-November/index.html" >
+   <LINK REL="made" HREF="mailto:ircbp-commits%40lists.berlios.de?Subject=Re%3A%20%5Bircbp-commits%5D%20IRCBP%20-%20%20r53%20-%20in%20website/trunk%3A%20.%20_notes%20images/ic%20includes&In-Reply-To=%3C200411160227.iAG2REGb003335%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000047.html">
+   
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[ircbp-commits] IRCBP -  r53 - in website/trunk: . _notes images/ic includes</H1>
+    <B>nigelj at berlios.de</B> 
+    <A HREF="mailto:ircbp-commits%40lists.berlios.de?Subject=Re%3A%20%5Bircbp-commits%5D%20IRCBP%20-%20%20r53%20-%20in%20website/trunk%3A%20.%20_notes%20images/ic%20includes&In-Reply-To=%3C200411160227.iAG2REGb003335%40sheep.berlios.de%3E"
+       TITLE="[ircbp-commits] IRCBP -  r53 - in website/trunk: . _notes images/ic includes">nigelj at berlios.de
+       </A><BR>
+    <I>Tue Nov 16 03:27:14 CET 2004</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000047.html">[ircbp-commits] IRCBP -  r52 - framework/trunk
+</A></li>
+        
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#48">[ date ]</a>
+              <a href="thread.html#48">[ thread ]</a>
+              <a href="subject.html#48">[ subject ]</a>
+              <a href="author.html#48">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: nigelj
+Date: 2004-11-16 03:27:13 +0100 (Tue, 16 Nov 2004)
+New Revision: 53
+
+Modified:
+   website/trunk/CHANGELOG
+   website/trunk/CREDITS
+   website/trunk/LICENSE
+   website/trunk/_notes/ircbp.css.mno
+   website/trunk/images/ic/bug16b.png
+   website/trunk/images/ic/docman16b.png
+   website/trunk/images/ic/ftp16b.png
+   website/trunk/images/ic/mail16b.png
+   website/trunk/images/ic/patch.png
+   website/trunk/images/ic/support16b.jpg
+   website/trunk/images/ic/taskman16b.png
+   website/trunk/includes/footer.php
+   website/trunk/includes/header.php
+   website/trunk/includes/index.php
+   website/trunk/index.php
+   website/trunk/ircbp-mockup.gif
+   website/trunk/ircbp.css
+   website/trunk/svn.php
+Log:
+Fix up header - make it consistant...
+Added Id to svn:keywords
+
+
+Property changes on: website/trunk/CHANGELOG
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+
+Property changes on: website/trunk/CREDITS
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+
+Property changes on: website/trunk/LICENSE
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+
+Property changes on: website/trunk/_notes/ircbp.css.mno
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+
+Property changes on: website/trunk/images/ic/bug16b.png
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+
+Property changes on: website/trunk/images/ic/docman16b.png
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+
+Property changes on: website/trunk/images/ic/ftp16b.png
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+
+Property changes on: website/trunk/images/ic/mail16b.png
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+
+Property changes on: website/trunk/images/ic/patch.png
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+
+Property changes on: website/trunk/images/ic/support16b.jpg
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+
+Property changes on: website/trunk/images/ic/taskman16b.png
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+
+Property changes on: website/trunk/includes/footer.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Modified: website/trunk/includes/header.php
+===================================================================
+--- website/trunk/includes/header.php	2004-11-16 01:00:37 UTC (rev 52)
++++ website/trunk/includes/header.php	2004-11-16 02:27:13 UTC (rev 53)
+@@ -40,7 +40,7 @@
+ &lt;div id=&quot;masthead&quot;&gt; 
+   &lt;h1 id=&quot;siteName&quot;&gt;IRCbp - The IRC Bot Project &lt;/h1&gt; 
+   &lt;div id=&quot;globalNav&quot;&gt; 
+-    &lt;a href=&quot;index.php&quot;&gt;Homepage&lt;/a&gt; | &lt;a href=&quot;svn.php&quot;&gt;SVN Information&lt;/a&gt;&lt;!-- | &lt;a href=&quot;#&quot;&gt;global
++    &lt;a href=&quot;index.php&quot;&gt;Home Page&lt;/a&gt; | &lt;a href=&quot;svn.php&quot;&gt;SVN Information&lt;/a&gt;&lt;!-- | &lt;a href=&quot;#&quot;&gt;global
+     link&lt;/a&gt; | &lt;a href=&quot;#&quot;&gt;global link&lt;/a&gt; | &lt;a href=&quot;#&quot;&gt;global link&lt;/a&gt; | &lt;a href=&quot;#&quot;&gt;global
+     link&lt;/a&gt; | &lt;a href=&quot;#&quot;&gt;global link&lt;/a&gt; --&gt;
+   &lt;/div&gt;
+
+
+Property changes on: website/trunk/includes/header.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+
+Property changes on: website/trunk/includes/index.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+
+Property changes on: website/trunk/index.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+
+Property changes on: website/trunk/ircbp-mockup.gif
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+
+Property changes on: website/trunk/ircbp.css
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+
+Property changes on: website/trunk/svn.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000047.html">[ircbp-commits] IRCBP -  r52 - framework/trunk
+</A></li>
+	
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#48">[ date ]</a>
+              <a href="thread.html#48">[ thread ]</a>
+              <a href="subject.html#48">[ subject ]</a>
+              <a href="author.html#48">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/ircbp-commits">More information about the ircbp-commits
+mailing list</a><br>
+</body></html>

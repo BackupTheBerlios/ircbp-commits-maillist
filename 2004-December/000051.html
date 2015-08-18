@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [ircbp-commits] IRCBP -  r56 - framework/trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/ircbp-commits/2004-December/index.html" >
+   <LINK REL="made" HREF="mailto:ircbp-commits%40lists.berlios.de?Subject=Re%3A%20%5Bircbp-commits%5D%20IRCBP%20-%20%20r56%20-%20framework/trunk&In-Reply-To=%3C200412060507.iB65794g020232%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000050.html">
+   <LINK REL="Next"  HREF="000052.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[ircbp-commits] IRCBP -  r56 - framework/trunk</H1>
+    <B>nigelj at berlios.de</B> 
+    <A HREF="mailto:ircbp-commits%40lists.berlios.de?Subject=Re%3A%20%5Bircbp-commits%5D%20IRCBP%20-%20%20r56%20-%20framework/trunk&In-Reply-To=%3C200412060507.iB65794g020232%40sheep.berlios.de%3E"
+       TITLE="[ircbp-commits] IRCBP -  r56 - framework/trunk">nigelj at berlios.de
+       </A><BR>
+    <I>Mon Dec  6 06:07:09 CET 2004</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000050.html">[ircbp-commits] IRCBP -  r55 - framework/trunk
+</A></li>
+        <LI>Next message: <A HREF="000052.html">[ircbp-commits] IRCBP -  r57 - framework/trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#51">[ date ]</a>
+              <a href="thread.html#51">[ thread ]</a>
+              <a href="subject.html#51">[ subject ]</a>
+              <a href="author.html#51">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: nigelj
+Date: 2004-12-06 06:07:04 +0100 (Mon, 06 Dec 2004)
+New Revision: 56
+
+Modified:
+   framework/trunk/CHANGELOG
+   framework/trunk/create_config.sql
+   framework/trunk/ircbpconfig.py
+Log:
+NJ - 06/12/04 - Added NSPASSWORD to SQL
+NJ - 06/12/04 - Made a small optimization in ircbpconfig.py to incorporate the DB handling to end result into 1 line (instead of two) and only two varibles, looking for more to be made currently.
+NJ - 06/12/04 - Remade create_config.sql (this time from phpMyAdmin).  Now also drops existing table (if any) so PLEASE watch out!
+NJ - 06/12/04 - Limited SQL query to one result which should prevent problems.
+
+Modified: framework/trunk/CHANGELOG
+===================================================================
+--- framework/trunk/CHANGELOG	2004-12-05 12:35:25 UTC (rev 55)
++++ framework/trunk/CHANGELOG	2004-12-06 05:07:04 UTC (rev 56)
+@@ -65,3 +65,7 @@
+ NJ - 05/12/04 - Updating the newline handling in the buffer thanks to bdash in #newzealand on freenode ;)
+ NJ - 05/12/04 - Finished updating the newline handling (it works perfectly) once again, THANK YOU BDASH!
+ NJ - 05/12/04 - Fix up !kick syntax error.
++NJ - 06/12/04 - Added NSPASSWORD to SQL
++NJ - 06/12/04 - Made a small optimization in ircbpconfig.py to incorporate the DB handling to end result into 1 line (instead of two) and only two varibles, looking for more to be made currently.
++NJ - 06/12/04 - Remade create_config.sql (this time from phpMyAdmin).  Now also drops existing table (if any) so PLEASE watch out!
++NJ - 06/12/04 - Limited SQL query to one result which should prevent problems.
+
+Modified: framework/trunk/create_config.sql
+===================================================================
+--- framework/trunk/create_config.sql	2004-12-05 12:35:25 UTC (rev 55)
++++ framework/trunk/create_config.sql	2004-12-06 05:07:04 UTC (rev 56)
+@@ -1,8 +1,20 @@
+-CREATE TABLE `config` (
++-- 
++-- Table structure for table `config`
++-- 
++
++DROP TABLE IF EXISTS `config`;
++CREATE TABLE IF NOT EXISTS `config` (
+   `NICKNAME` tinytext NOT NULL,
+   `REALNAME` mediumtext NOT NULL,
++  `NSPASSWORD` tinytext NOT NULL,
+   `SERVER` text NOT NULL,
+   `PORT` smallint(5) unsigned NOT NULL default '6667',
+   `SVRPASSWORD` text NOT NULL,
+   `DANCERMODE` char(1) binary NOT NULL default '1'
+-) TYPE=MyISAM
+\ No newline at end of file
++) TYPE=MyISAM;
++
++-- 
++-- Dumping data for table `config`
++-- 
++
++INSERT INTO `config` VALUES ('IRCBP', 'The Internet Relay Chat Bot Project', '', 'irc.freenode.net', 6667, '', 0x31);
+
+Modified: framework/trunk/ircbpconfig.py
+===================================================================
+--- framework/trunk/ircbpconfig.py	2004-12-05 12:35:25 UTC (rev 55)
++++ framework/trunk/ircbpconfig.py	2004-12-06 05:07:04 UTC (rev 56)
+@@ -42,9 +42,8 @@
+ 
+ db=_mysql.connect(host=sqlconfig.SQLHOST, user=sqlconfig.SQLUSER, passwd=sqlconfig.SQLPASS, db='IRCBP', port=sqlconfig.SQLPORT)
+ 
+-db.query(&quot;&quot;&quot;SELECT * from config&quot;&quot;&quot;)
+-config=db.use_result()
+-configr=config.fetch_row()
++db.query(&quot;&quot;&quot;SELECT * from config LIMIT 0 , 1&quot;&quot;&quot;)
++configprops=db.use_result().fetch_row()
+ 
+ 
+ # Add functions for Users/Channels and Prefixes
+@@ -64,28 +63,29 @@
+ # Channels that the bot will join by default
+  
+ addchan('#IRCBP')
++addchan('#newzealand')
+ 
+ # Bot Nickname and Realname (Must not be null) for the IRC Bot to use
+     
+-NICKNAME = configr[0][0]
+-REALNAME = configr[0][1]
++NICKNAME = configprops[0][0]
++REALNAME = configprops[0][1]
+     
+ # Add your bots nickserv password here, if none leave blank!
+ 
+-NSPASSWORD = ''
++NSPASSWORD = configprops[0][2]
+ 
+ # Server Connection Details
+ # In future this should be in a seperate file!
+     
+ # IRC Server DNS Name OR IP
+-SERVER = configr[0][2]
++SERVER = configprops[0][3]
+     
+ # Port IRC Server Listerns on
+-PORT = int(configr[0][3])
++PORT = int(configprops[0][4])
+ 
+ # Password for logining into the server (normally blank unless you have a special I:line)
+-SVRPASSWORD = configr[0][4]
++SVRPASSWORD = configprops[0][5]
+ 
+ # 1 if using a IRCd that you are connecting to is DancerIRCd (Freenode for example)
+ # 0 if not
+-DANCERMODE = int(configr[0][5])
++DANCERMODE = int(configprops[0][6])
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000050.html">[ircbp-commits] IRCBP -  r55 - framework/trunk
+</A></li>
+	<LI>Next message: <A HREF="000052.html">[ircbp-commits] IRCBP -  r57 - framework/trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#51">[ date ]</a>
+              <a href="thread.html#51">[ thread ]</a>
+              <a href="subject.html#51">[ subject ]</a>
+              <a href="author.html#51">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/ircbp-commits">More information about the ircbp-commits
+mailing list</a><br>
+</body></html>

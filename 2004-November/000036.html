@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [ircbp-commits] IRCBP -  r41 - website/trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/ircbp-commits/2004-November/index.html" >
+   <LINK REL="made" HREF="mailto:ircbp-commits%40lists.berlios.de?Subject=Re%3A%20%5Bircbp-commits%5D%20IRCBP%20-%20%20r41%20-%20website/trunk&In-Reply-To=%3C200411132152.iADLqL3n024277%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000035.html">
+   <LINK REL="Next"  HREF="000037.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[ircbp-commits] IRCBP -  r41 - website/trunk</H1>
+    <B>nigelj at berlios.de</B> 
+    <A HREF="mailto:ircbp-commits%40lists.berlios.de?Subject=Re%3A%20%5Bircbp-commits%5D%20IRCBP%20-%20%20r41%20-%20website/trunk&In-Reply-To=%3C200411132152.iADLqL3n024277%40sheep.berlios.de%3E"
+       TITLE="[ircbp-commits] IRCBP -  r41 - website/trunk">nigelj at berlios.de
+       </A><BR>
+    <I>Sat Nov 13 22:52:21 CET 2004</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000035.html">[ircbp-commits] IRCBP -  r40 - website/trunk
+</A></li>
+        <LI>Next message: <A HREF="000037.html">[ircbp-commits] IRCBP -  r42 - framework/trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#36">[ date ]</a>
+              <a href="thread.html#36">[ thread ]</a>
+              <a href="subject.html#36">[ subject ]</a>
+              <a href="author.html#36">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: nigelj
+Date: 2004-11-13 22:52:18 +0100 (Sat, 13 Nov 2004)
+New Revision: 41
+
+Modified:
+   website/trunk/svn.php
+Log:
+More updates to the svn.php page
+
+Modified: website/trunk/svn.php
+===================================================================
+--- website/trunk/svn.php	2004-11-13 21:47:43 UTC (rev 40)
++++ website/trunk/svn.php	2004-11-13 21:52:18 UTC (rev 41)
+@@ -39,24 +39,27 @@
+   &lt;div class=&quot;story&quot;&gt; 
+     &lt;h3&gt;First Time Access&lt;/h3&gt; 
+     &lt;p&gt;
+-    	If you are accessing our SVN Repository for the first time you must have the Subversion client software installed on your computer.  Debian users can download and install the needed software by performing: &quot;apt-get install subversion&quot;.  Other users will need to download the source and compile it or you other precompiled builds from <A HREF="http://subversion.tigris.org">http://subversion.tigris.org</A>
+-	
+-	After downloading and building/installing the client software you need to make sure you have a reasonably new version of Python (we recommend 2.3.x) from <A HREF="http://www.python.org">http://www.python.org</A>
+-	
+-	Software can then be downloaded by performing the following command:  
++    	If you are accessing our SVN Repository for the first time you must have the Subversion client software installed on your computer.  Debian users can download and install the needed software by performing: &quot;apt-get install subversion&quot;.  Other users will need to download the source and compile it or you other precompiled builds from &lt;a href=&quot;<A HREF="http://subversion.tigris.org">http://subversion.tigris.org</A>&quot;&gt;The Subversion Homepage&lt;/a&gt;
++    &lt;/p&gt;
++    &lt;p&gt;
++	After downloading and building/installing the client software you need to make sure you have a reasonably new version of Python (we recommend 2.3.x) from &lt;a href=&quot;<A HREF="http://www.python.org">http://www.python.org</A>&quot;&gt;The Python Homepage&lt;/a&gt;
++    &lt;/p&gt;
++    &lt;p&gt;
++	Software can then be downloaded by performing the following command:  &lt;br&gt;
+ 		&quot;svn checkout <A HREF="svn://svn.berlios.de/svnroot/repos/ircbp/framework/trunk">svn://svn.berlios.de/svnroot/repos/ircbp/framework/trunk</A>&quot;
++    &lt;/p&gt;
+   &lt;/div&gt;
+   &lt;div class=&quot;story&quot;&gt; 
+     &lt;h3&gt;Continued Updating&lt;/h3&gt; 
+     &lt;p&gt;
+-    	Downloaded source should be updated often (thats if you want to) by issuing the following command:
++    	Downloaded source should be updated often (thats if you want to) by issuing the following command:&lt;br&gt;
+ 		&quot;svn update&quot; or &quot;svn up&quot;
+     &lt;/p&gt;
+   &lt;/div&gt;
+   &lt;div class=&quot;story&quot;&gt;
+     &lt;h3&gt;Web Browser Access&lt;/h3&gt;
+     &lt;p&gt;
+-    	The IRCbp SVN Sources can be accessed via your web browser by going to: <A HREF="http://svn.berlios.de/viewcvs/ircbp">http://svn.berlios.de/viewcvs/ircbp</A>
++    	The IRCbp SVN Sources can be accessed via your web browser by going to: &lt;a href=&quot;<A HREF="http://svn.berlios.de/viewcvs/ircbp">http://svn.berlios.de/viewcvs/ircbp</A>&quot;&gt;<A HREF="http://svn.berlios.de/viewcvs/ircbp&lt;/a">http://svn.berlios.de/viewcvs/ircbp&lt;/a</A>&gt;
+     &lt;/p&gt;
+   &lt;/div&gt;
+ &lt;/div&gt; 
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000035.html">[ircbp-commits] IRCBP -  r40 - website/trunk
+</A></li>
+	<LI>Next message: <A HREF="000037.html">[ircbp-commits] IRCBP -  r42 - framework/trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#36">[ date ]</a>
+              <a href="thread.html#36">[ thread ]</a>
+              <a href="subject.html#36">[ subject ]</a>
+              <a href="author.html#36">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/ircbp-commits">More information about the ircbp-commits
+mailing list</a><br>
+</body></html>

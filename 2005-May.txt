@@ -1,0 +1,574 @@
+From nigelj at berlios.de  Sat May 21 08:29:07 2005
+From: nigelj at berlios.de (nigelj at berlios.de)
+Date: Sat, 21 May 2005 08:29:07 +0200
+Subject: [ircbp-commits] IRCBP -  r69 - website/trunk/includes
+Message-ID: <200505210629.j4L6T7PA000207@sheep.berlios.de>
+
+Author: nigelj
+Date: 2005-05-21 08:28:59 +0200 (Sat, 21 May 2005)
+New Revision: 69
+
+Modified:
+   website/trunk/includes/footer.php
+Log:
+Add last updated to stats bar...
+
+Modified: website/trunk/includes/footer.php
+===================================================================
+--- website/trunk/includes/footer.php	2005-02-12 04:44:52 UTC (rev 68)
++++ website/trunk/includes/footer.php	2005-05-21 06:28:59 UTC (rev 69)
+@@ -39,7 +39,12 @@
+   <div class="relatedLinks"> 
+     <?php
+     //  BerliOS Stats
+-    include("/home/users/nigelj/ircbp/projhtml.cache");
++    $filename = "/home/users/nigelj/ircbp/projhtml.cache";
++    include($filename);
++    // From php.net
++    if (file_exists($filename)) {
++        echo "Updated: " . date ("F d Y H:i:s.", filemtime($filename));
++    }
+     ?>
+   </div> 
+   <div class="relatedLinks"></div> 
+
+
+
+From nigelj at berlios.de  Sat May 21 08:32:07 2005
+From: nigelj at berlios.de (nigelj at berlios.de)
+Date: Sat, 21 May 2005 08:32:07 +0200
+Subject: [ircbp-commits] IRCBP -  r70 - website/trunk/includes
+Message-ID: <200505210632.j4L6W7CI000762@sheep.berlios.de>
+
+Author: nigelj
+Date: 2005-05-21 08:32:05 +0200 (Sat, 21 May 2005)
+New Revision: 70
+
+Modified:
+   website/trunk/includes/footer.php
+Log:
+Opps, update in RE to r69
+
+Modified: website/trunk/includes/footer.php
+===================================================================
+--- website/trunk/includes/footer.php	2005-05-21 06:28:59 UTC (rev 69)
++++ website/trunk/includes/footer.php	2005-05-21 06:32:05 UTC (rev 70)
+@@ -43,7 +43,7 @@
+     include($filename);
+     // From php.net
+     if (file_exists($filename)) {
+-        echo "Updated: " . date ("F d Y H:i:s.", filemtime($filename));
++        echo "Stats Updated: " . date ("F d Y H:i:s.", filemtime($filename));
+     }
+     ?>
+   </div> 
+
+
+
+From nigelj at berlios.de  Sat May 21 08:56:32 2005
+From: nigelj at berlios.de (nigelj at berlios.de)
+Date: Sat, 21 May 2005 08:56:32 +0200
+Subject: [ircbp-commits] IRCBP -  r71 - /
+Message-ID: <200505210656.j4L6uWxb001688@sheep.berlios.de>
+
+Author: nigelj
+Date: 2005-05-21 08:56:31 +0200 (Sat, 21 May 2005)
+New Revision: 71
+
+Added:
+   bot/
+Log:
+Create bot dir for development
+
+
+
+
+From nigelj at berlios.de  Sat May 21 09:00:53 2005
+From: nigelj at berlios.de (nigelj at berlios.de)
+Date: Sat, 21 May 2005 09:00:53 +0200
+Subject: [ircbp-commits] IRCBP -  r72 - in bot: . trunk
+Message-ID: <200505210700.j4L70rBM001960@sheep.berlios.de>
+
+Author: nigelj
+Date: 2005-05-21 09:00:52 +0200 (Sat, 21 May 2005)
+New Revision: 72
+
+Added:
+   bot/branches/
+   bot/tags/
+   bot/trunk/
+   bot/trunk/CHANGELOG
+   bot/trunk/LICENSE
+   bot/trunk/README
+Log:
+Add base files (Blank) and directories
+
+
+
+Added: bot/trunk/CHANGELOG
+===================================================================
+
+Added: bot/trunk/LICENSE
+===================================================================
+
+Added: bot/trunk/README
+===================================================================
+
+
+
+From nigelj at berlios.de  Sat May 21 10:44:17 2005
+From: nigelj at berlios.de (nigelj at berlios.de)
+Date: Sat, 21 May 2005 10:44:17 +0200
+Subject: [ircbp-commits] IRCBP -  r73 - website/trunk
+Message-ID: <200505210844.j4L8iHZm009023@sheep.berlios.de>
+
+Author: nigelj
+Date: 2005-05-21 10:44:16 +0200 (Sat, 21 May 2005)
+New Revision: 73
+
+Modified:
+   website/trunk/svn.php
+Log:
+Update svn.php to reflect the changes to SVN structure...
+
+
+
+Modified: website/trunk/svn.php
+===================================================================
+--- website/trunk/svn.php	2005-05-21 07:00:52 UTC (rev 72)
++++ website/trunk/svn.php	2005-05-21 08:44:16 UTC (rev 73)
+@@ -45,9 +45,14 @@
+ 	After downloading and building/installing the client software you need to make sure you have a reasonably new version of Python (we recommend 2.3.x) from <a href="http://www.python.org">The Python Homepage</a>
+     </p>
+     <p>
+-	IRCbp Framework can be downloaded via SVN with:  <br>
+-		"svn checkout svn://svn.berlios.de/ircbp/framework/trunk" <br>
+-	While the IRCbp Bot (which is work in progress) can be downloaded via SVN at: <br>
++	The development on the IRCBP Framework and bot was ceased in Feb 2005, an archive of it can be downloaded 
++	via SVN with:  <br>
++		"svn checkout svn://svn.berlios.de/ircbp/framework-old/trunk" <br>
++		"svn checkout svn://svn.berlios.de/ircbp/bot-old/trunk" <br>
++		respectfully.
++    </p>
++    <p>
++	The replacement of the old versions will be able to be downloaded from SVN by: <br>
+ 		"svn checkout svn://svn.berlios.de/ircbp/bot/trunk" <br><br>
+ 	<!--More information about the Framework and the Bot and their different uses can be found at <a href="projectinfo.php">Project Information</a>-->
+     </p>
+@@ -69,4 +74,4 @@
+ <!--end content --> 
+ <?php
+ include("includes/footer.php");
+-?>
+\ No newline at end of file
++?>
+
+
+
+From nigelj at berlios.de  Sat May 21 22:18:49 2005
+From: nigelj at berlios.de (nigelj at berlios.de)
+Date: Sat, 21 May 2005 22:18:49 +0200
+Subject: [ircbp-commits] IRCBP -  r74 - in website/trunk: . includes
+Message-ID: <200505212018.j4LKIn0q011670@sheep.berlios.de>
+
+Author: nigelj
+Date: 2005-05-21 22:18:48 +0200 (Sat, 21 May 2005)
+New Revision: 74
+
+Modified:
+   website/trunk/includes/footer.php
+   website/trunk/index.php
+   website/trunk/svn.php
+Log:
+Make bottom of page display the $Id$ keyword, - last updated thingy-me-jig
+
+
+Modified: website/trunk/includes/footer.php
+===================================================================
+--- website/trunk/includes/footer.php	2005-05-21 08:44:16 UTC (rev 73)
++++ website/trunk/includes/footer.php	2005-05-21 20:18:48 UTC (rev 74)
+@@ -59,7 +59,8 @@
+ <div id="siteInfo"> 
+   <!--<img src="" width="44" height="22">--> <a href="#">About Us</a> | <a href="#">Site
+   Map</a> | <a href="#">Privacy Policy</a> | <a href="http://developer.berlios.de/project/memberlist.php?group_id=2320">Contact Us</a> | &copy;2004
+-  The IRC Bot Project (Brian Pankey & Nigel Jones).  All Rights Reserved
++  The IRC Bot Project (Brian Pankey & Nigel Jones).  All Rights Reserved<br>
++  Page Last Updated: <?php echo $version ?>
+ </div> 
+ <br> 
+ </body>
+
+Modified: website/trunk/index.php
+===================================================================
+--- website/trunk/index.php	2005-05-21 08:44:16 UTC (rev 73)
++++ website/trunk/index.php	2005-05-21 20:18:48 UTC (rev 74)
+@@ -2,9 +2,11 @@
+ /*
+ (C) Nigel Jones, Brian Pankey and contributors to The IRC Bot Project, All Rights Reserved, 2004
+ 
++*/
+ 
+-$Id$
++$version = "$Id$"
+ 
++/*
+ 
+ The main developers are:
+ 	Nigel Jones <nigelj at users.berlios.de>
+
+Modified: website/trunk/svn.php
+===================================================================
+--- website/trunk/svn.php	2005-05-21 08:44:16 UTC (rev 73)
++++ website/trunk/svn.php	2005-05-21 20:18:48 UTC (rev 74)
+@@ -2,9 +2,11 @@
+ /*
+ (C) Nigel Jones, Brian Pankey and contributors to The IRC Bot Project, All Rights Reserved, 2004
+ 
++*/
+ 
+-$Id$
++$version = "$Id$"
+ 
++/*
+ 
+ The main developers are:
+ 	Nigel Jones <nigelj at users.berlios.de>
+
+
+
+From nigelj at berlios.de  Sat May 21 22:30:59 2005
+From: nigelj at berlios.de (nigelj at berlios.de)
+Date: Sat, 21 May 2005 22:30:59 +0200
+Subject: [ircbp-commits] IRCBP -  r75 - in website/trunk: . includes
+Message-ID: <200505212030.j4LKUxMv012574@sheep.berlios.de>
+
+Author: nigelj
+Date: 2005-05-21 22:30:57 +0200 (Sat, 21 May 2005)
+New Revision: 75
+
+Modified:
+   website/trunk/includes/footer.php
+   website/trunk/index.php
+   website/trunk/svn.php
+Log:
+Last commit didn't work... I think I found the problem though...
+
+
+Modified: website/trunk/includes/footer.php
+===================================================================
+--- website/trunk/includes/footer.php	2005-05-21 20:18:48 UTC (rev 74)
++++ website/trunk/includes/footer.php	2005-05-21 20:30:57 UTC (rev 75)
+@@ -60,7 +60,7 @@
+   <!--<img src="" width="44" height="22">--> <a href="#">About Us</a> | <a href="#">Site
+   Map</a> | <a href="#">Privacy Policy</a> | <a href="http://developer.berlios.de/project/memberlist.php?group_id=2320">Contact Us</a> | &copy;2004
+   The IRC Bot Project (Brian Pankey & Nigel Jones).  All Rights Reserved<br>
+-  Page Last Updated: <?php echo $version ?>
++  Page Last Updated: <?php echo $version; ?>
+ </div> 
+ <br> 
+ </body>
+
+Modified: website/trunk/index.php
+===================================================================
+--- website/trunk/index.php	2005-05-21 20:18:48 UTC (rev 74)
++++ website/trunk/index.php	2005-05-21 20:30:57 UTC (rev 75)
+@@ -4,7 +4,7 @@
+ 
+ */
+ 
+-$version = "$Id$"
++$version = "$Id$";
+ 
+ /*
+ 
+
+Modified: website/trunk/svn.php
+===================================================================
+--- website/trunk/svn.php	2005-05-21 20:18:48 UTC (rev 74)
++++ website/trunk/svn.php	2005-05-21 20:30:57 UTC (rev 75)
+@@ -4,7 +4,7 @@
+ 
+ */
+ 
+-$version = "$Id$"
++$version = "$Id$";
+ 
+ /*
+ 
+
+
+
+From nigelj at berlios.de  Sun May 22 10:32:26 2005
+From: nigelj at berlios.de (nigelj at berlios.de)
+Date: Sun, 22 May 2005 10:32:26 +0200
+Subject: [ircbp-commits] IRCBP -  r76 - in website/trunk: . devinfo includes
+Message-ID: <200505220832.j4M8WQV1031928@sheep.berlios.de>
+
+Author: nigelj
+Date: 2005-05-22 10:32:23 +0200 (Sun, 22 May 2005)
+New Revision: 76
+
+Added:
+   website/trunk/devinfo.php
+   website/trunk/devinfo/
+   website/trunk/devinfo/0-2-0.php
+   website/trunk/devinfo/index.php
+Modified:
+   website/trunk/includes/footer.php
+   website/trunk/includes/header.php
+   website/trunk/index.php
+   website/trunk/svn.php
+Log:
+* Add $title to provide unique titles for each page
+* Start "development information" pages
+* Fix up several other messups (i think)
+
+
+
+Added: website/trunk/devinfo/0-2-0.php
+===================================================================
+--- website/trunk/devinfo/0-2-0.php	2005-05-21 20:30:57 UTC (rev 75)
++++ website/trunk/devinfo/0-2-0.php	2005-05-22 08:32:23 UTC (rev 76)
+@@ -0,0 +1,45 @@
++<?php
++/*
++(C) Nigel Jones, Brian Pankey and contributors to The IRC Bot Project, All Rights Reserved, 2004
++
++*/
++
++$version = "$Id: svn.php 75 2005-05-21 20:30:57Z nigelj $";
++
++/*
++
++The main developers are:
++	Nigel Jones <nigelj at users.berlios.de>
++	Brian Pankey <pankey at users.berlios.de>
++
++Contributors names can be found in "CREDITS"
++
++
++
++Project Page is at:
++https://developer.berlios.de/projects/ircbp/
++
++
++
++This is currently held under the terms of the General Public License Version 2 which can be found at:
++http://www.gnu.org/licenses/gpl.txt
++GPL Document can also be found in the same directory as this file as "LICENSE"
++*/
++?>
++<div class="story">
++    <h2>IRCBP Version 0.2.0 (Zilda)</h2>
++    <p>IRCBP 'Zilda' Information: <br>
++    <ul>
++	<li>In planning</li>
++	<li>Release Date is unknown</li>
++	<li>Main Developers are nigelj & pankey</li>
++    </ul>
++    </p>
++</div>
++<div class="story">
++    <h3>Related News Announcements</h3>
++    <p><ul>
++    	<li><a href="http://developer.berlios.de/forum/forum.php?forum_id=9488">IRCBP to drop framework</a></li>
++	<li><a href="http://developer.berlios.de/forum/forum.php?forum_id=11653">IRCBP 0.2.0 "Zilda" Development Commencing</a></li>
++    </ul></p>
++</div>
+\ No newline at end of file
+
+Added: website/trunk/devinfo/index.php
+===================================================================
+--- website/trunk/devinfo/index.php	2005-05-21 20:30:57 UTC (rev 75)
++++ website/trunk/devinfo/index.php	2005-05-22 08:32:23 UTC (rev 76)
+@@ -0,0 +1,3 @@
++<?php
++header("Location: http://ircbp.berlios.de");
++?>
+\ No newline at end of file
+
+Added: website/trunk/devinfo.php
+===================================================================
+--- website/trunk/devinfo.php	2005-05-21 20:30:57 UTC (rev 75)
++++ website/trunk/devinfo.php	2005-05-22 08:32:23 UTC (rev 76)
+@@ -0,0 +1,64 @@
++<?php
++/*
++(C) Nigel Jones, Brian Pankey and contributors to The IRC Bot Project, All Rights Reserved, 2004
++
++$Id: svn.php 75 2005-05-21 20:30:57Z nigelj $
++
++*/
++
++$title = "Development Information";
++
++/*
++
++The main developers are:
++	Nigel Jones <nigelj at users.berlios.de>
++	Brian Pankey <pankey at users.berlios.de>
++
++Contributors names can be found in "CREDITS"
++
++
++
++Project Page is at:
++https://developer.berlios.de/projects/ircbp/
++
++
++
++This is currently held under the terms of the General Public License Version 2 which can be found at:
++http://www.gnu.org/licenses/gpl.txt
++GPL Document can also be found in the same directory as this file as "LICENSE"
++*/
++include("includes/header.php");
++?>
++<div id="content"> 
++  <div id="breadCrumb"> 
++    <a href="http://ircbp.berlios.de">IRCbp</a> / Development Information</div> 
++  <h2 id="pageName">Welcome to IRCbp Development Information</h2> 
++  <div class="feature"> 
++    <img src="ircbp-mockup.gif" alt=""> 
++    <h3>Introduction</h3> 
++    <p> 
++    	IRCbp now provides development information for all of our current/upcoming/old releases.  You may select the release that you wish to have information for on the left.
++	</p>
++  </div>
++  <?php
++  	if ($HTTP_GET_VARS['v'] == '0.1.0')
++	{
++	    include("devinfo/0-1-0.php");
++	}
++	elseif ($HTTP_GET_VARS['v'] == '0.1.1')
++	{
++	    include("devinfo/0-1-1.php");
++	}
++	elseif ($HTTP_GET_VARS['v'] == ('0.2.0' || 'zilda'))
++	{
++	    include("devinfo/0-2-0.php");
++	}
++	else
++	{
++	    include("devinfo/0-2-0.php");
++	}
++    ?>
++</div>
++<?
++include("includes/footer.php");
++?>
+
+Modified: website/trunk/includes/footer.php
+===================================================================
+--- website/trunk/includes/footer.php	2005-05-21 20:30:57 UTC (rev 75)
++++ website/trunk/includes/footer.php	2005-05-22 08:32:23 UTC (rev 76)
+@@ -29,6 +29,7 @@
+   <div id="sectionLinks"> 
+     <ul> 
+       <li><a href="index.php">Home Page </a></li> 
++      <li><a href="devinfo.php">Development Information</a></li>
+       <li><a href="svn.php">SVN Information </a></li>
+       <li><a href="http://developer.berlios.de/projects/ircbp/">Project Page </a></li>
+ <!--      <li><a href="http://berlios.de">BerliOS Website</a></li> 
+
+Modified: website/trunk/includes/header.php
+===================================================================
+--- website/trunk/includes/header.php	2005-05-21 20:30:57 UTC (rev 75)
++++ website/trunk/includes/header.php	2005-05-22 08:32:23 UTC (rev 76)
+@@ -31,7 +31,7 @@
+ <!-- DW6 -->
+ <head>
+ <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+-<title>The IRC Bot Project</title>
++<title>The IRC Bot Project - <? echo $title; ?></title>
+ <link rel="stylesheet" href="ircbp.css" type="text/css">
+ </head>
+ <!-- The structure of this file is exactly the same as 2col_rightNav.html;
+@@ -40,8 +40,8 @@
+ <div id="masthead"> 
+   <h1 id="siteName">IRCbp - The IRC Bot Project </h1> 
+   <div id="globalNav"> 
+-    <a href="index.php">Home Page</a> | <a href="svn.php">SVN Information</a><!-- | <a href="#">global
+-    link</a> | <a href="#">global link</a> | <a href="#">global link</a> | <a href="#">global
++    <a href="index.php">Home Page</a> | <a href="devinfo.php">Development Information</a> | <a href="svn.php">SVN Information</a>
++    <!-- | <a href="#">global link</a> | <a href="#">global link</a> | <a href="#">global link</a> | <a href="#">global
+     link</a> | <a href="#">global link</a> -->
+   </div>
+ </div> 
+
+Modified: website/trunk/index.php
+===================================================================
+--- website/trunk/index.php	2005-05-21 20:30:57 UTC (rev 75)
++++ website/trunk/index.php	2005-05-22 08:32:23 UTC (rev 76)
+@@ -5,6 +5,7 @@
+ */
+ 
+ $version = "$Id$";
++$title = "Home";
+ 
+ /*
+ 
+
+Modified: website/trunk/svn.php
+===================================================================
+--- website/trunk/svn.php	2005-05-21 20:30:57 UTC (rev 75)
++++ website/trunk/svn.php	2005-05-22 08:32:23 UTC (rev 76)
+@@ -5,6 +5,7 @@
+ */
+ 
+ $version = "$Id$";
++$title = "SVN Information";
+ 
+ /*
+ 
+
+
+
+From nigelj at berlios.de  Sun May 22 12:52:54 2005
+From: nigelj at berlios.de (nigelj at berlios.de)
+Date: Sun, 22 May 2005 12:52:54 +0200
+Subject: [ircbp-commits] IRCBP -  r77 - in website/trunk: images includes
+Message-ID: <200505221052.j4MAqsra003083@sheep.berlios.de>
+
+Author: nigelj
+Date: 2005-05-22 12:52:46 +0200 (Sun, 22 May 2005)
+New Revision: 77
+
+Added:
+   website/trunk/images/vcss.png
+Modified:
+   website/trunk/includes/footer.php
+Log:
+Valid CSS, might as well brag, considering the HTML isn't... but don't tell anybody!!!
+
+
+
+Added: website/trunk/images/vcss.png
+===================================================================
+(Binary files differ)
+
+
+Property changes on: website/trunk/images/vcss.png
+___________________________________________________________________
+Name: svn:mime-type
+   + application/octet-stream
+
+Modified: website/trunk/includes/footer.php
+===================================================================
+--- website/trunk/includes/footer.php	2005-05-22 08:32:23 UTC (rev 76)
++++ website/trunk/includes/footer.php	2005-05-22 10:52:46 UTC (rev 77)
+@@ -62,6 +62,12 @@
+   Map</a> | <a href="#">Privacy Policy</a> | <a href="http://developer.berlios.de/project/memberlist.php?group_id=2320">Contact Us</a> | &copy;2004
+   The IRC Bot Project (Brian Pankey & Nigel Jones).  All Rights Reserved<br>
+   Page Last Updated: <?php echo $version; ?>
++  
++  <p>
++     <a href="http://jigsaw.w3.org/css-validator/check/referer">
++       <img style="border:0;width:88px;height:31px" src="images/vcss.png" alt="Valid CSS!">
++     </a>
++  </p>
+ </div> 
+ <br> 
+ </body>
+
+
+

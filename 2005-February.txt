@@ -1,0 +1,34 @@
+From nigelj at berlios.de  Sat Feb 12 05:44:53 2005
+From: nigelj at berlios.de (nigelj at berlios.de)
+Date: Sat, 12 Feb 2005 05:44:53 +0100
+Subject: [ircbp-commits] IRCBP -  r68 - / bot-old framework-old
+Message-ID: <200502120444.j1C4ir1p030287@sheep.berlios.de>
+
+Author: nigelj
+Date: 2005-02-12 05:44:52 +0100 (Sat, 12 Feb 2005)
+New Revision: 68
+
+Added:
+   bot-old/
+   bot-old/trunk/
+   framework-old/
+   framework-old/trunk/
+Removed:
+   bot-old/trunk/
+   bot/
+   framework-old/trunk/
+   framework/
+Log:
+For imformation of changes please refer to: https://developer.berlios.de/forum/forum.php?forum_id=9488
+
+
+Copied: bot-old (from rev 63, bot)
+
+Copied: bot-old/trunk (from rev 67, bot/trunk)
+
+Copied: framework-old (from rev 59, framework)
+
+Copied: framework-old/trunk (from rev 67, framework/trunk)
+
+
+

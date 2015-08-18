@@ -1,0 +1,876 @@
+From nigelj at berlios.de  Sun Dec  5 12:57:22 2004
+From: nigelj at berlios.de (nigelj at berlios.de)
+Date: Sun, 5 Dec 2004 12:57:22 +0100
+Subject: [ircbp-commits] IRCBP -  r54 - framework/trunk
+Message-ID: <200412051157.iB5BvMCO029122@sheep.berlios.de>
+
+Author: nigelj
+Date: 2004-12-05 12:57:10 +0100 (Sun, 05 Dec 2004)
+New Revision: 54
+
+Modified:
+   framework/trunk/CHANGELOG
+   framework/trunk/ircbp.py
+Log:
+NJ - 05/12/04 - Updating the newline handling in the buffer thanks to bdash in #newzealand on freenode ;)
+
+Modified: framework/trunk/CHANGELOG
+===================================================================
+--- framework/trunk/CHANGELOG	2004-11-16 02:27:13 UTC (rev 53)
++++ framework/trunk/CHANGELOG	2004-12-05 11:57:10 UTC (rev 54)
+@@ -62,3 +62,4 @@
+ NJ - 16/11/04 - Add mysql table create file...
+ NJ - 16/11/04 - Somehow an IF statement got replaced with "hey" so it wouldn't work :(
+ NJ - 16/11/04 - After advise all the tabs have being removed
++NJ - 05/12/04 - Updating the newline handling in the buffer thanks to bdash in #newzealand on freenode ;)
+
+Modified: framework/trunk/ircbp.py
+===================================================================
+--- framework/trunk/ircbp.py	2004-11-16 02:27:13 UTC (rev 53)
++++ framework/trunk/ircbp.py	2004-12-05 11:57:10 UTC (rev 54)
+@@ -152,13 +152,30 @@
+ irclogin()
+ sendnickserv()
+ dojoins()
+-
++#
++#while (1):
++##    buffer = IRC.recv(1024)
++#    buffer = ''
++#    while (1):
++#        buffer += IRC.recv(1024)
++#        if '\n' in buffer:
++#            msg, buffer = buffer.split('\n', 1)
++#            yield msg
++buffer = ''
+ while (1):
+-    buffer = IRC.recv(1024)
++    buffer += IRC.recv(1024)
++    
++    if '\n' not in buffer:
++        continue
+ 
+-    msg = string.split(buffer)
+-    print buffer,
++    msg, buffer = buffer.split('\n', 1)
+ 
++    
++
++#    msg = string.split(buffer)
++#    print buffer,
++    print msg,
++
+     if msg[0] == "PING": #check if server have sent ping command
+         irccommand("PONG %s" % msg[1]) #answer with pong as per RFC 1459
+     if msg[1] == 'PRIVMSG' and msg[2] == ircbpconfig.NICKNAME:
+
+
+
+From nigelj at berlios.de  Sun Dec  5 13:35:26 2004
+From: nigelj at berlios.de (nigelj at berlios.de)
+Date: Sun, 5 Dec 2004 13:35:26 +0100
+Subject: [ircbp-commits] IRCBP -  r55 - framework/trunk
+Message-ID: <200412051235.iB5CZQ8H031608@sheep.berlios.de>
+
+Author: nigelj
+Date: 2004-12-05 13:35:25 +0100 (Sun, 05 Dec 2004)
+New Revision: 55
+
+Modified:
+   framework/trunk/CHANGELOG
+   framework/trunk/CREDITS
+   framework/trunk/ircbp.py
+Log:
+NJ - 05/12/04 - Finished updating the newline handling (it works perfectly) once again, THANK YOU BDASH!
+NJ - 05/12/04 - Fix up !kick syntax error.
+
+Modified: framework/trunk/CHANGELOG
+===================================================================
+--- framework/trunk/CHANGELOG	2004-12-05 11:57:10 UTC (rev 54)
++++ framework/trunk/CHANGELOG	2004-12-05 12:35:25 UTC (rev 55)
+@@ -63,3 +63,5 @@
+ NJ - 16/11/04 - Somehow an IF statement got replaced with "hey" so it wouldn't work :(
+ NJ - 16/11/04 - After advise all the tabs have being removed
+ NJ - 05/12/04 - Updating the newline handling in the buffer thanks to bdash in #newzealand on freenode ;)
++NJ - 05/12/04 - Finished updating the newline handling (it works perfectly) once again, THANK YOU BDASH!
++NJ - 05/12/04 - Fix up !kick syntax error.
+
+Modified: framework/trunk/CREDITS
+===================================================================
+--- framework/trunk/CREDITS	2004-12-05 11:57:10 UTC (rev 54)
++++ framework/trunk/CREDITS	2004-12-05 12:35:25 UTC (rev 55)
+@@ -0,0 +1,4 @@
++Thank you to the following (if we miss you please let us know):
++    
++    bdash - Advise on correct Python stuff (like indenting) & Providing code to fix the buffer processing.
++    Gian Mario Tagliaretti - For kindly letting us use his code as our base.
+\ No newline at end of file
+
+Modified: framework/trunk/ircbp.py
+===================================================================
+--- framework/trunk/ircbp.py	2004-12-05 11:57:10 UTC (rev 54)
++++ framework/trunk/ircbp.py	2004-12-05 12:35:25 UTC (rev 55)
+@@ -164,182 +164,165 @@
+ buffer = ''
+ while (1):
+     buffer += IRC.recv(1024)
+-    
+-    if '\n' not in buffer:
+-        continue
+ 
+-    msg, buffer = buffer.split('\n', 1)
++    while '\n' in buffer:
++        msg, buffer = buffer.split('\n', 1)
+ 
++
+     
+ 
+ #    msg = string.split(buffer)
+ #    print buffer,
+-    print msg,
++        print msg
++        msg = msg.split()
++        if msg[0] == "PING": #check if server have sent ping command
++            irccommand("PONG %s" % msg[1]) #answer with pong as per RFC 1459
++        if msg[1] == 'PRIVMSG' and msg[2] == ircbpconfig.NICKNAME:
++            print "We got a PM!!!"
++            nick_name = msg[0][:string.find(msg[0],"!")] #if a private message is sent to you catch it
++            print "Sent by " + nick_name
++            message = ' '.join(msg[3:])
++            print "The message was: " + message
++        #if msg[1] == 'PRIVMSG' and ischanmember(msg[2]):
++        if msg[1] == 'PRIVMSG' and msg[2][0] == "#":
++            # Doing this for HOSTMASK auth method which is now in use
++            HOSTMASK = string.lstrip(msg[0], ':')
++            # Some functions still need nick_name so lets keep it!
++            nick_name = string.lstrip(msg[0][:string.find(msg[0],"!")], ':')
++            CHANNEL = msg[2]
++            if len(msg) > 3:
++                print "We have a channel message! - W00T!!!"
++    
++                # Say Command
++    
++                if string.upper(string.lstrip(msg[3], ':')) == string.upper('!say'):
++                    print "We need to say something :P"
++                    message = ' '.join(msg[4:])
++                    irccommand("PRIVMSG " + CHANNEL + " :" + message)
+ 
+-    if msg[0] == "PING": #check if server have sent ping command
+-        irccommand("PONG %s" % msg[1]) #answer with pong as per RFC 1459
+-    if msg[1] == 'PRIVMSG' and msg[2] == ircbpconfig.NICKNAME:
+-        print "We got a PM!!!"
+-        nick_name = msg[0][:string.find(msg[0],"!")] #if a private message is sent to you catch it
+-        print "Sent by " + nick_name
+-        message = ' '.join(msg[3:])
+-        print "The message was: " + message
+-    #if msg[1] == 'PRIVMSG' and ischanmember(msg[2]):
+-    if msg[1] == 'PRIVMSG' and msg[2][0] == "#":
+-        # Doing this for HOSTMASK auth method which is now in use
+-        HOSTMASK = string.lstrip(msg[0], ':')
+-        # Some functions still need nick_name so lets keep it!
+-        nick_name = string.lstrip(msg[0][:string.find(msg[0],"!")], ':')
+-        CHANNEL = msg[2]
+-        if len(msg) > 3:
+-            print "We have a channel message! - W00T!!!"
++                # Topic Command
+ 
+-            # Say Command
+-
+-            if string.upper(string.lstrip(msg[3], ':')) == string.upper('!say'):
+-                print "We need to say something :P"
+-                message = ' '.join(msg[4:])
+-                irccommand("PRIVMSG " + CHANNEL + " :" + message)
+-
+-            # Topic Command
+-
+-            if string.upper(string.lstrip(msg[3], ':')) == string.upper('!topic'):
+-                if privcheck(HOSTMASK):
+-                    if len(msg) > 4:
+-                        print "Changing Topic"
+-                        message = ' '.join(msg[4:])
+-                        print "The new topic will be: " + message
+-                        irccommand("TOPIC " + CHANNEL + " :" + message)
++                if string.upper(string.lstrip(msg[3], ':')) == string.upper('!topic'):
++                    if privcheck(HOSTMASK):
++                        if len(msg) > 4:
++                            print "Changing Topic"
++                            message = ' '.join(msg[4:])
++                            print "The new topic will be: " + message
++                            irccommand("TOPIC " + CHANNEL + " :" + message)
++                        else:
++                            print "This is work in process"
+                     else:
+-                        print "This is work in process"
+-                else:
+-                    # They don't have privledges!
+-                    irccommand("PRIVMSG " + CHANNEL + " :No privledges for this command!")
+-
+-            # Kick Command
+-
+-            if string.upper(string.lstrip(msg[3], ':')) == string.upper('!kick'):
+-                if privcheck(HOSTMASK) == 1:
+-                    print "Someone's being bad, I need to kick!"
+-                    #if msg[4] != '':
+-                    if len(msg) > 4:
+-                        if ischanmember(string.upper(msg[4])):
+-                            irccommand("PRIVMSG " + CHANNEL + " :Oh someones being bad! LETS KICK!")
+-                            if len(msg) > 5:
+-                                #if msg[5] != '':
+-                                if len(msg) > 6:
+-                                    message = ' '.join(msg[6:])
+-                                    irccommand("KICK " + msg[4] + " " + msg[5] + " :" + message)
++                        # They don't have privledges!
++                        irccommand("PRIVMSG " + CHANNEL + " :No privledges for this command!")
++    
++                # Kick Command
++    
++                if string.upper(string.lstrip(msg[3], ':')) == string.upper('!kick'):
++                    if privcheck(HOSTMASK) == 1:
++                        print "Someone's being bad, I need to kick!"
++                        #if msg[4] != '':
++                        if len(msg) > 4:
++                            if ischanmember(string.upper(msg[4])):
++                                irccommand("PRIVMSG " + CHANNEL + " :Oh someones being bad! LETS KICK!")
++                                if len(msg) > 5:
++                                    #if msg[5] != '':
++                                    if len(msg) > 6:
++                                        message = ' '.join(msg[6:])
++                                        irccommand("KICK " + msg[4] + " " + msg[5] + " :" + message)
++                                    else:
++                                        irccommand("KICK " + msg[4] + " " + msg[5] + " :You've being a BAD boy!")
++    
++                                    irccommand("PRIVMSG " + CHANNEL + " :" + nick_name + ", your dirty work is done!")
+                                 else:
+-                                    irccommand("KICK " + msg[4] + " " + msg[5] + " :You've being a BAD boy!")
+-
+-                                irccommand("PRIVMSG " + CHANNEL + " :" + nick_name + ", your dirty work is done!")
++                                    irccommand("PRIVMSG " + CHANNEL + " :SYNTAX IS: !kick \x02<#channel> <nick>\x02 [Optional Message]")
+                             else:
+-                                irccommand("PRIVMSG " + CHANNEL + " :SYNTAX IS: !kick \x02<nick>\x02 [Optional Message]")
++                                irccommand("PRIVMSG " + CHANNEL + " :" + nick_name + ", I'm not in that channel!")
+                         else:
+-                            irccommand("PRIVMSG " + CHANNEL + " :" + nick_name + ", I'm not in that channel!")
++                            irccommand("PRIVMSG " + CHANNEL + " :SYNTAX IS: !kick \x02<#channel> <nick>\x02 [Optional Message]")
+                     else:
+-                        irccommand("PRIVMSG " + CHANNEL + " :SYNTAX IS: !kick \x02<nick>\x02 [Optional Message]")
+-                else:
+-                    # They don't have privledges!
+-                    irccommand("PRIVMSG " + CHANNEL + " :No privledges for this command!")
+-
+-	    if string.upper(string.lstrip(msg[3], ':')) == string.upper('!list'):
++                        # They don't have privledges!
++                        irccommand("PRIVMSG " + CHANNEL + " :No privledges for this command!")
++    
++                if string.upper(string.lstrip(msg[3], ':')) == string.upper('!list'):
+                     x = 0
+                     print "Starting the loop"
+                     while (len(ircbpconfig.channels)-1 >= x):
+                         irccommand("PRIVMSG " + CHANNEL + " :I am in: " + ircbpconfig.channels[x])
+                         x = x+1
+     
+-            # Join Command
++                # Join Command
+ 
+-            if string.upper(string.lstrip(msg[3], ':')) == string.upper('!join'):
+-                print "Joining a channel!"
+-                # Need to make sure that nick_name has in our privledged array
+-                if privcheck(HOSTMASK):
+-                    # He/She is, making sure that they provided a channel - We will need a string check on this too.
+-                    if len(msg) > 4:
+-                        # Something has being provided, need to make sure it is a channel for now by only checking if it has # at the start
+-                        if msg[4][0] == "#":
+-                            # All ok, adding the channel to the array, JOIN sent normally because we have gone past the time of dojoin
+-                            ircbpconfig.addchan(msg[4])
+-                            irccommand("JOIN " + msg[4])
++                if string.upper(string.lstrip(msg[3], ':')) == string.upper('!join'):
++                    print "Joining a channel!"
++                    # Need to make sure that nick_name has in our privledged array
++                    if privcheck(HOSTMASK):
++                        # He/She is, making sure that they provided a channel - We will need a string check on this too.
++                        if len(msg) > 4:
++                            # Something has being provided, need to make sure it is a channel for now by only checking if it has # at the start
++                            if msg[4][0] == "#":
++                                # All ok, adding the channel to the array, JOIN sent normally because we have gone past the time of dojoin
++                                ircbpconfig.addchan(msg[4])
++                                irccommand("JOIN " + msg[4])
++                            else:
++                                # Not a channel, return error
++                                irccommand("PRIVMSG " + CHANNEL + " :" + msg[4] + " is not a channel")
+                         else:
+-                            # Not a channel, return error
+-                            irccommand("PRIVMSG " + CHANNEL + " :" + msg[4] + " is not a channel")
++                            # Nothing provided, syntax error!
++                            irccommand("PRIVMSG " + CHANNEL + " :Syntax error, correct syntax is: !join \x02<channel>\x02")
+                     else:
+-                        # Nothing provided, syntax error!
+-                        irccommand("PRIVMSG " + CHANNEL + " :Syntax error, correct syntax is: !join \x02<channel>\x02")
+-                else:
+-                    irccommand("PRIVMSG " + CHANNEL + " :No privledges for this command!")
+-
+-	    # Cycle Command
+-
+-	    if string.upper(string.lstrip(msg[3], ':')) == string.upper('!cycle'):
+-                if privcheck(HOSTMASK):
+-                    print "Cycling!"
+-                    irccommand("PRIVMSG " + CHANNEL + " :Okie Doke!")
+-                    irccommand("PART " + CHANNEL)
+-                    irccommand("JOIN " + CHANNEL)
+-                    irccommand("PRIVMSG " + CHANNEL + " :Did you miss me?")
+-                else:
+-                    # Oh dear they cycle our bot!
+-                    irccommand("PRIVMSG " + CHANNEL + " :No privledges for this command!")
+-
+-            # Part Command
+-
+-            if string.upper(string.lstrip(msg[3], ':')) == string.upper('!part'):
+-                if privcheck(HOSTMASK):
+-                    if len(msg) > 4:
+-                        if msg[4][0] == "#":
+-                            print "Parting!"
+-                            irccommand("PRIVMSG " + msg[4] + " :buh-bye now! =)")
+-                            irccommand("PART " + msg[4] + " :Part from %s" % nick_name)
+-                            remchan(msg[4])
++                        irccommand("PRIVMSG " + CHANNEL + " :No privledges for this command!")
++    
++	        # Cycle Command
++    
++	        if string.upper(string.lstrip(msg[3], ':')) == string.upper('!cycle'):
++                    if privcheck(HOSTMASK):
++                        print "Cycling!"
++                        irccommand("PRIVMSG " + CHANNEL + " :Okie Doke!")
++                        irccommand("PART " + CHANNEL)
++                        irccommand("JOIN " + CHANNEL)
++                        irccommand("PRIVMSG " + CHANNEL + " :Did you miss me?")
++                    else:
++                        # Oh dear they cycle our bot!
++                        irccommand("PRIVMSG " + CHANNEL + " :No privledges for this command!")
++    
++                # Part Command
++    
++                if string.upper(string.lstrip(msg[3], ':')) == string.upper('!part'):
++                    if privcheck(HOSTMASK):
++                        if len(msg) > 4:
++                            if msg[4][0] == "#":
++                                print "Parting!"
++                                irccommand("PRIVMSG " + msg[4] + " :buh-bye now! =)")
++                                irccommand("PART " + msg[4] + " :Part from %s" % nick_name)
++                                remchan(msg[4])
++                            else:
++                                irccommand("PRIVMSG " + CHANNEL + " :" + msg[4] + " is not a channel")
+                         else:
+-                            irccommand("PRIVMSG " + CHANNEL + " :" + msg[4] + " is not a channel")
++                            irccommand("PRIVMSG " + CHANNEL + " :buh-bye now! =)")
++                            irccommand("PART " + CHANNEL + " :Part from %s" % nick_name)
++                            remchan(CHANNEL)
+                     else:
+-                        irccommand("PRIVMSG " + CHANNEL + " :buh-bye now! =)")
+-                        irccommand("PART " + CHANNEL + " :Part from %s" % nick_name)
+-                        remchan(CHANNEL)
+-                else:
+-                    # Oh dear they tried to part our bot!
+-                    irccommand("PRIVMSG " + CHANNEL + " :No privledges for this command!")
+-
+-            # Quit Command
+-
+-            if string.upper(string.lstrip(msg[3], ':')) == string.upper('!quit'):
+-                if privcheck(HOSTMASK):
+-                    print "It's a quit"
+-                    irccommand("QUIT :Quit from " + nick_name)
+-                    print "Sent quit message, exiting"
+-                    sys.exit()
+-                else:
+-                    # Oh dear they quit our bot!
+-                    irccommand("PRIVMSG " + CHANNEL + " :No privledges for this command!")
+-        else:
+-            # Somethings wrong with the server but yeah, we can save running some code
+-            print "This is work in process"
+-    if msg[1] == 'KICK':
+-        irccommand("JOIN " + msg[2])
+-    #Join Blocking Modes
+-    if msg[1] == '467' or msg[1] == '471' or msg[1] == '473' or msg[1] == '474' or msg[1] == '475':
+-        #We can't join channels that are invite only
+-        print "The channel the bot just tried to join is invite only..."
+-        print "Removing from list"
+-        remchan(msg[3])
+-        if len(ircbpconfig.CHANNELS) == 0:
+-            print "There has being an error join the IRC Channels that you have provided,  and we cannot proceed."
+-            print "For your convinence the bot has being cleanly shutdown"
+-            irccommand("QUIT :Bot Error")
+-            sys.exit()
+-    if ircbpconfig.DANCERMODE:
+-        if msg[1] == '379':
+-            print "We are being forwarded"
+-            remchan(msg[3])
+-            ircbpconfig.addchan(msg[4])
+-        #join blocking modes
+-        if msg[1] == '437' or msg[1] == '480' or msg[1] == '515':
++                        # Oh dear they tried to part our bot!
++                        irccommand("PRIVMSG " + CHANNEL + " :No privledges for this command!")
++    
++                # Quit Command
++    
++                if string.upper(string.lstrip(msg[3], ':')) == string.upper('!quit'):
++                    if privcheck(HOSTMASK):
++                        print "It's a quit"
++                        irccommand("QUIT :Quit from " + nick_name)
++                        print "Sent quit message, exiting"
++                        sys.exit()
++                    else:
++                        # Oh dear they quit our bot!
++                        irccommand("PRIVMSG " + CHANNEL + " :No privledges for this command!")
++            else:
++                # Somethings wrong with the server but yeah, we can save running some code
++                print "This is work in process"
++        if msg[1] == 'KICK':
++            irccommand("JOIN " + msg[2])
++        #Join Blocking Modes
++        if msg[1] == '467' or msg[1] == '471' or msg[1] == '473' or msg[1] == '474' or msg[1] == '475':
+             #We can't join channels that are invite only
+             print "The channel the bot just tried to join is invite only..."
+             print "Removing from list"
+@@ -349,3 +332,19 @@
+                 print "For your convinence the bot has being cleanly shutdown"
+                 irccommand("QUIT :Bot Error")
+                 sys.exit()
++        if ircbpconfig.DANCERMODE:
++            if msg[1] == '379':
++                print "We are being forwarded"
++                remchan(msg[3])
++                ircbpconfig.addchan(msg[4])
++            #join blocking modes
++            if msg[1] == '437' or msg[1] == '480' or msg[1] == '515':
++                #We can't join channels that are invite only
++                print "The channel the bot just tried to join is invite only..."
++                print "Removing from list"
++                remchan(msg[3])
++                if len(ircbpconfig.CHANNELS) == 0:
++                    print "There has being an error join the IRC Channels that you have provided,  and we cannot proceed."
++                    print "For your convinence the bot has being cleanly shutdown"
++                    irccommand("QUIT :Bot Error")
++                    sys.exit()
+
+
+
+From nigelj at berlios.de  Mon Dec  6 06:07:09 2004
+From: nigelj at berlios.de (nigelj at berlios.de)
+Date: Mon, 6 Dec 2004 06:07:09 +0100
+Subject: [ircbp-commits] IRCBP -  r56 - framework/trunk
+Message-ID: <200412060507.iB65794g020232@sheep.berlios.de>
+
+Author: nigelj
+Date: 2004-12-06 06:07:04 +0100 (Mon, 06 Dec 2004)
+New Revision: 56
+
+Modified:
+   framework/trunk/CHANGELOG
+   framework/trunk/create_config.sql
+   framework/trunk/ircbpconfig.py
+Log:
+NJ - 06/12/04 - Added NSPASSWORD to SQL
+NJ - 06/12/04 - Made a small optimization in ircbpconfig.py to incorporate the DB handling to end result into 1 line (instead of two) and only two varibles, looking for more to be made currently.
+NJ - 06/12/04 - Remade create_config.sql (this time from phpMyAdmin).  Now also drops existing table (if any) so PLEASE watch out!
+NJ - 06/12/04 - Limited SQL query to one result which should prevent problems.
+
+Modified: framework/trunk/CHANGELOG
+===================================================================
+--- framework/trunk/CHANGELOG	2004-12-05 12:35:25 UTC (rev 55)
++++ framework/trunk/CHANGELOG	2004-12-06 05:07:04 UTC (rev 56)
+@@ -65,3 +65,7 @@
+ NJ - 05/12/04 - Updating the newline handling in the buffer thanks to bdash in #newzealand on freenode ;)
+ NJ - 05/12/04 - Finished updating the newline handling (it works perfectly) once again, THANK YOU BDASH!
+ NJ - 05/12/04 - Fix up !kick syntax error.
++NJ - 06/12/04 - Added NSPASSWORD to SQL
++NJ - 06/12/04 - Made a small optimization in ircbpconfig.py to incorporate the DB handling to end result into 1 line (instead of two) and only two varibles, looking for more to be made currently.
++NJ - 06/12/04 - Remade create_config.sql (this time from phpMyAdmin).  Now also drops existing table (if any) so PLEASE watch out!
++NJ - 06/12/04 - Limited SQL query to one result which should prevent problems.
+
+Modified: framework/trunk/create_config.sql
+===================================================================
+--- framework/trunk/create_config.sql	2004-12-05 12:35:25 UTC (rev 55)
++++ framework/trunk/create_config.sql	2004-12-06 05:07:04 UTC (rev 56)
+@@ -1,8 +1,20 @@
+-CREATE TABLE `config` (
++-- 
++-- Table structure for table `config`
++-- 
++
++DROP TABLE IF EXISTS `config`;
++CREATE TABLE IF NOT EXISTS `config` (
+   `NICKNAME` tinytext NOT NULL,
+   `REALNAME` mediumtext NOT NULL,
++  `NSPASSWORD` tinytext NOT NULL,
+   `SERVER` text NOT NULL,
+   `PORT` smallint(5) unsigned NOT NULL default '6667',
+   `SVRPASSWORD` text NOT NULL,
+   `DANCERMODE` char(1) binary NOT NULL default '1'
+-) TYPE=MyISAM
+\ No newline at end of file
++) TYPE=MyISAM;
++
++-- 
++-- Dumping data for table `config`
++-- 
++
++INSERT INTO `config` VALUES ('IRCBP', 'The Internet Relay Chat Bot Project', '', 'irc.freenode.net', 6667, '', 0x31);
+
+Modified: framework/trunk/ircbpconfig.py
+===================================================================
+--- framework/trunk/ircbpconfig.py	2004-12-05 12:35:25 UTC (rev 55)
++++ framework/trunk/ircbpconfig.py	2004-12-06 05:07:04 UTC (rev 56)
+@@ -42,9 +42,8 @@
+ 
+ db=_mysql.connect(host=sqlconfig.SQLHOST, user=sqlconfig.SQLUSER, passwd=sqlconfig.SQLPASS, db='IRCBP', port=sqlconfig.SQLPORT)
+ 
+-db.query("""SELECT * from config""")
+-config=db.use_result()
+-configr=config.fetch_row()
++db.query("""SELECT * from config LIMIT 0 , 1""")
++configprops=db.use_result().fetch_row()
+ 
+ 
+ # Add functions for Users/Channels and Prefixes
+@@ -64,28 +63,29 @@
+ # Channels that the bot will join by default
+  
+ addchan('#IRCBP')
++addchan('#newzealand')
+ 
+ # Bot Nickname and Realname (Must not be null) for the IRC Bot to use
+     
+-NICKNAME = configr[0][0]
+-REALNAME = configr[0][1]
++NICKNAME = configprops[0][0]
++REALNAME = configprops[0][1]
+     
+ # Add your bots nickserv password here, if none leave blank!
+ 
+-NSPASSWORD = ''
++NSPASSWORD = configprops[0][2]
+ 
+ # Server Connection Details
+ # In future this should be in a seperate file!
+     
+ # IRC Server DNS Name OR IP
+-SERVER = configr[0][2]
++SERVER = configprops[0][3]
+     
+ # Port IRC Server Listerns on
+-PORT = int(configr[0][3])
++PORT = int(configprops[0][4])
+ 
+ # Password for logining into the server (normally blank unless you have a special I:line)
+-SVRPASSWORD = configr[0][4]
++SVRPASSWORD = configprops[0][5]
+ 
+ # 1 if using a IRCd that you are connecting to is DancerIRCd (Freenode for example)
+ # 0 if not
+-DANCERMODE = int(configr[0][5])
++DANCERMODE = int(configprops[0][6])
+
+
+
+From nigelj at berlios.de  Tue Dec  7 11:20:35 2004
+From: nigelj at berlios.de (nigelj at berlios.de)
+Date: Tue, 7 Dec 2004 11:20:35 +0100
+Subject: [ircbp-commits] IRCBP -  r57 - framework/trunk
+Message-ID: <200412071020.iB7AKZTE003926@sheep.berlios.de>
+
+Author: nigelj
+Date: 2004-12-07 11:20:34 +0100 (Tue, 07 Dec 2004)
+New Revision: 57
+
+Modified:
+   framework/trunk/CHANGELOG
+   framework/trunk/create_config.sql
+   framework/trunk/ircbp.py
+   framework/trunk/ircbpconfig.py
+Log:
+WARNING - THIS COMMIT HAS KNOWN BUGS
+NJ - 07/12/04 - 433 numeric now handled - means that it append a _ to ircbpconfig.NICKNAME and send a NICK command to the server until it is allowed
+NJ - 07/12/04 - 376 numeric now handled - When the server gets the 376 (END OF MOTD) numeric it will THEN send Nickserv Identification and Join requested channels.
+NJ - 07/12/04 - Implemented db-based channels and users to the bot.
+NJ - 07/12/04 - Fixed comments in ircbpconfig.py (to make it clearer in the fact you only need to edit the SQL settings now).
+
+Modified: framework/trunk/CHANGELOG
+===================================================================
+--- framework/trunk/CHANGELOG	2004-12-06 05:07:04 UTC (rev 56)
++++ framework/trunk/CHANGELOG	2004-12-07 10:20:34 UTC (rev 57)
+@@ -69,3 +69,7 @@
+ NJ - 06/12/04 - Made a small optimization in ircbpconfig.py to incorporate the DB handling to end result into 1 line (instead of two) and only two varibles, looking for more to be made currently.
+ NJ - 06/12/04 - Remade create_config.sql (this time from phpMyAdmin).  Now also drops existing table (if any) so PLEASE watch out!
+ NJ - 06/12/04 - Limited SQL query to one result which should prevent problems.
++NJ - 07/12/04 - 433 numeric now handled - means that it append a _ to ircbpconfig.NICKNAME and send a NICK command to the server until it is allowed
++NJ - 07/12/04 - 376 numeric now handled - When the server gets the 376 (END OF MOTD) numeric it will THEN send Nickserv Identification and Join requested channels.
++NJ - 07/12/04 - Implemented db-based channels and users to the bot.
++NJ - 07/12/04 - Fixed comments in ircbpconfig.py (to make it clearer in the fact you only need to edit the SQL settings now).
+
+Modified: framework/trunk/create_config.sql
+===================================================================
+--- framework/trunk/create_config.sql	2004-12-06 05:07:04 UTC (rev 56)
++++ framework/trunk/create_config.sql	2004-12-07 10:20:34 UTC (rev 57)
+@@ -1,4 +1,21 @@
+ -- 
++-- Table structure for table `channels`
++-- 
++
++DROP TABLE IF EXISTS `channels`;
++CREATE TABLE IF NOT EXISTS `channels` (
++  `channel` varchar(30) NOT NULL default ''
++) TYPE=MyISAM;
++
++-- 
++-- Dumping data for table `channels`
++-- 
++
++INSERT INTO `channels` VALUES ('#channel');
++
++-- --------------------------------------------------------
++
++-- 
+ -- Table structure for table `config`
+ -- 
+ 
+@@ -18,3 +35,20 @@
+ -- 
+ 
+ INSERT INTO `config` VALUES ('IRCBP', 'The Internet Relay Chat Bot Project', '', 'irc.freenode.net', 6667, '', 0x31);
++
++-- --------------------------------------------------------
++
++-- 
++-- Table structure for table `users`
++-- 
++
++DROP TABLE IF EXISTS `users`;
++CREATE TABLE IF NOT EXISTS `users` (
++  `mask` text NOT NULL
++) TYPE=MyISAM;
++
++-- 
++-- Dumping data for table `users`
++-- 
++
++INSERT INTO `users` VALUES ('*!*@*');
+
+Modified: framework/trunk/ircbp.py
+===================================================================
+--- framework/trunk/ircbp.py	2004-12-06 05:07:04 UTC (rev 56)
++++ framework/trunk/ircbp.py	2004-12-07 10:20:34 UTC (rev 57)
+@@ -34,11 +34,10 @@
+ # CODE STARTS HERE								#
+ # It is strongly recommended that you do not touch anything below this point!	#
+ #################################################################################
+-
++#print ircbpconfig.SERVER
+ # This basic socket will provide 1 connection to an IRC Server, in future we can most likely man it into an array
+ # of sockets
+ IRC = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+-
+ #open a connection with the server
+ def srvconnect():
+     IRC.connect((ircbpconfig.SERVER, ircbpconfig.PORT))
+@@ -150,8 +149,7 @@
+ 
+ srvconnect()
+ irclogin()
+-sendnickserv()
+-dojoins()
++
+ #
+ #while (1):
+ ##    buffer = IRC.recv(1024)
+@@ -321,6 +319,13 @@
+                 print "This is work in process"
+         if msg[1] == 'KICK':
+             irccommand("JOIN " + msg[2])
++        #Wait until end of MOTD to do nickserv stuff and joins.
++        if msg[1] == '376':
++            sendnickserv()
++            dojoins()
++        if msg[1] == '433':
++            ircbpconfig.NICKNAME = msg[3] + "_"
++            irccommand("NICK :" + ircbpconfig.NICKNAME)
+         #Join Blocking Modes
+         if msg[1] == '467' or msg[1] == '471' or msg[1] == '473' or msg[1] == '474' or msg[1] == '475':
+             #We can't join channels that are invite only
+
+Modified: framework/trunk/ircbpconfig.py
+===================================================================
+--- framework/trunk/ircbpconfig.py	2004-12-06 05:07:04 UTC (rev 56)
++++ framework/trunk/ircbpconfig.py	2004-12-07 10:20:34 UTC (rev 57)
+@@ -24,46 +24,50 @@
+ # GPL Document can also be found in the same directory as this file as "LICENSE"			#
+ #########################################################################################################
+ 
+-# Introduce Arrays for Users/Channels and Prefixes
++# Don't edit the following "import" line!
+ 
+ import _mysql
+ 
+-privledged = []
+-channels = []
+-prefixes = []
+ 
++
+ class mysqlconfig:
++    # EDIT THE FOLLOWING LINE TO THE NAME OF YOUR SQL HOST
+     SQLHOST = 'localhost'
++    # EDIT THE FOLLOWING LINE TO THE NAME OF YOUR SQL USER
+     SQLUSER = 'IRCBP'
++    # EDIT THE FOLLOWING LINE TO THE PASSWORD OF YOUR SQL USER
+     SQLPASS = ''
++    # EDIT THE FOLLOWING LINE TO THE PORT USED BY YOUR SQL SERVER
+     SQLPORT = 3306
+ 
++    
++# DO NOT EDIT ANYTHING MORE 
++
++# SQL Connection
++
+ sqlconfig = mysqlconfig()
+ 
++# Connecting...
++
+ db=_mysql.connect(host=sqlconfig.SQLHOST, user=sqlconfig.SQLUSER, passwd=sqlconfig.SQLPASS, db='IRCBP', port=sqlconfig.SQLPORT)
+ 
++# Main configuration!
++
+ db.query("""SELECT * from config LIMIT 0 , 1""")
+ configprops=db.use_result().fetch_row()
+ 
++# Channels we join!
+ 
+-# Add functions for Users/Channels and Prefixes
+-def addmask(HOSTMASK):
+-    privledged.append(HOSTMASK)
++db.query("""SELECT * from channels""")
++prechannels=db.store_result()
++channels=[c[0] for c in prechannels.fetch_row(prechannels.num_rows())]
+ 
+-def addchan(CHANNEL):
+-    channels.append(CHANNEL)
++# Now from privledged users!
+ 
+-def addprefix(PREFIX):
+-    prefixes.append(PREFIX)
++db.query("""SELECT * from users""")
++preprivs=db.store_result()
++privledged=[c[0] for c in preprivs.fetch_row(prechannels.num_rows())]
+ 
+-#CONFIG IS HERE
+-    
+-addmask('*!*@*')
+-  
+-# Channels that the bot will join by default
+- 
+-addchan('#IRCBP')
+-addchan('#newzealand')
+ 
+ # Bot Nickname and Realname (Must not be null) for the IRC Bot to use
+     
+@@ -89,3 +93,5 @@
+ # 1 if using a IRCd that you are connecting to is DancerIRCd (Freenode for example)
+ # 0 if not
+ DANCERMODE = int(configprops[0][6])
++
++
+
+
+
+From pankey at berlios.de  Sun Dec 12 07:56:28 2004
+From: pankey at berlios.de (pankey at berlios.de)
+Date: Sun, 12 Dec 2004 07:56:28 +0100
+Subject: [ircbp-commits] IRCBP -  r58 - framework/trunk
+Message-ID: <200412120656.iBC6uSEQ004377@sheep.berlios.de>
+
+Author: pankey
+Date: 2004-12-12 07:56:27 +0100 (Sun, 12 Dec 2004)
+New Revision: 58
+
+Modified:
+   framework/trunk/CHANGELOG
+   framework/trunk/ircbp.py
+Log:
+BP - Fixed some spacing and such. Mostly code browsing since i need (and dont have) _mysql for the bot to work =P
+
+Modified: framework/trunk/CHANGELOG
+===================================================================
+--- framework/trunk/CHANGELOG	2004-12-07 10:20:34 UTC (rev 57)
++++ framework/trunk/CHANGELOG	2004-12-12 06:56:27 UTC (rev 58)
+@@ -73,3 +73,4 @@
+ NJ - 07/12/04 - 376 numeric now handled - When the server gets the 376 (END OF MOTD) numeric it will THEN send Nickserv Identification and Join requested channels.
+ NJ - 07/12/04 - Implemented db-based channels and users to the bot.
+ NJ - 07/12/04 - Fixed comments in ircbpconfig.py (to make it clearer in the fact you only need to edit the SQL settings now).
++BP - 07/12/04 - Fixed some spacing and such. Mostly code browsing since i need (and dont have) _mysql for the bot to work  =P
+
+Modified: framework/trunk/ircbp.py
+===================================================================
+--- framework/trunk/ircbp.py	2004-12-07 10:20:34 UTC (rev 57)
++++ framework/trunk/ircbp.py	2004-12-12 06:56:27 UTC (rev 58)
+@@ -1,42 +1,47 @@
+ #!/usr/bin/python
+ 
+ #########################################################################################################
+-# (C) 2004 Nigel Jones, Brian Pankey and contributors to The IRC Bot Project, All Rights Reserved.	#
+-# Some Portions are copyright to Gian Mario Tagliaretti, portions of his code will be replaced shortly	#
++# (C) 2004 Nigel Jones, Brian Pankey and contributors to The IRC Bot Project, All Rights Reserved.      #
++# Some Portions are copyright to Gian Mario Tagliaretti, portions of his code will be replaced shortly  #
+ #########################################################################################################
+ 
+ # $Id$ #
+ 
+ #################################################
+-# The main developers are:			#
+-#	Nigel Jones <nigelj at users.berlios.de>	#
+-#	Brian Pankey <pankey at users.berlios.de>	#
+-#						#
++# The main developers are:                      #
++#   Nigel Jones <nigelj at users.berlios.de>       #
++#   Brian Pankey <pankey at users.berlios.de>      #
++#                                               #
+ # Contributors names can be found in "CREDITS"	#
+-#						#
+-# Project Page is at:				#
+-# https://developer.berlios.de/projects/ircbp/	#
++#                                               #
++# Project Page is at:                           #
++# https://developer.berlios.de/projects/ircbp/  #
+ #################################################
+ 
+ #########################################################################################################
+ # This is currently held under the terms of the General Public License Version 2 which can be found at:	#
+-# http://www.gnu.org/licenses/gpl.txt									#
+-# GPL Document can also be found in the same directory as this file as "LICENSE"			#
++# http://www.gnu.org/licenses/gpl.txt                                                                   #
++# GPL Document can also be found in the same directory as this file as "LICENSE"                        #
+ #########################################################################################################
+ 
+ # Edit ircbpconfig.py for configuration
+ 
+ # Imports for sockets etc
+ 
+-import socket, string, sys, time, fnmatch, ircbpconfig
++import fnmatch
++import socket
++import string
++import sys
++import time
++import ircbpconfig
+     
+ #################################################################################
+-# CODE STARTS HERE								#
+-# It is strongly recommended that you do not touch anything below this point!	#
++# CODE STARTS HERE                                                              #
++# It is strongly recommended that you do not touch anything below this point!   #
+ #################################################################################
+ #print ircbpconfig.SERVER
+-# This basic socket will provide 1 connection to an IRC Server, in future we can most likely man it into an array
+-# of sockets
++# This basic socket will provide 1 connection to an IRC Server, in future we can most likely
++# make it into an array of sockets
+ IRC = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+ #open a connection with the server
+ def srvconnect():
+
+
+

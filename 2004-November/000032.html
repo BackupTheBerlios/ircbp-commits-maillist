@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [ircbp-commits] IRCBP -  r37 - framework/trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/ircbp-commits/2004-November/index.html" >
+   <LINK REL="made" HREF="mailto:ircbp-commits%40lists.berlios.de?Subject=Re%3A%20%5Bircbp-commits%5D%20IRCBP%20-%20%20r37%20-%20framework/trunk&In-Reply-To=%3C200411130825.iAD8P2kL024232%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000031.html">
+   <LINK REL="Next"  HREF="000033.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[ircbp-commits] IRCBP -  r37 - framework/trunk</H1>
+    <B>nigelj at berlios.de</B> 
+    <A HREF="mailto:ircbp-commits%40lists.berlios.de?Subject=Re%3A%20%5Bircbp-commits%5D%20IRCBP%20-%20%20r37%20-%20framework/trunk&In-Reply-To=%3C200411130825.iAD8P2kL024232%40sheep.berlios.de%3E"
+       TITLE="[ircbp-commits] IRCBP -  r37 - framework/trunk">nigelj at berlios.de
+       </A><BR>
+    <I>Sat Nov 13 09:25:02 CET 2004</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000031.html">[ircbp-commits] IRCBP -  r36 - in website/trunk: . includes
+</A></li>
+        <LI>Next message: <A HREF="000033.html">[ircbp-commits] IRCBP -  r38 - framework/trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#32">[ date ]</a>
+              <a href="thread.html#32">[ thread ]</a>
+              <a href="subject.html#32">[ subject ]</a>
+              <a href="author.html#32">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: nigelj
+Date: 2004-11-13 09:25:02 +0100 (Sat, 13 Nov 2004)
+New Revision: 37
+
+Modified:
+   framework/trunk/CHANGELOG
+   framework/trunk/ircbp.py
+Log:
+NJ - 13/11/04 - Added remchan() to reverse addchan()
+NJ - 13/11/04 - Added !list as a debugging tool (list channels the bot is on)
+NJ - 13/11/04 - Fixed !part to fix bug #2614 (!part Parts the wrong channel)
+
+
+Modified: framework/trunk/CHANGELOG
+===================================================================
+--- framework/trunk/CHANGELOG	2004-11-13 07:43:45 UTC (rev 36)
++++ framework/trunk/CHANGELOG	2004-11-13 08:25:02 UTC (rev 37)
+@@ -34,3 +34,6 @@
+ NJ - 09/10/04 - Made REALNAME set by default to fix bug #2613 (Invalid IRC Parameters)
+ NJ - 10/10/04 - Made irclogin() much more simple
+ NJ - 10/10/04 - Added sendnickserv() so users can have their bot automatically identify to nickserv
++NJ - 13/11/04 - Added remchan() to reverse addchan()
++NJ - 13/11/04 - Added !list as a debugging tool (list channels the bot is on)
++NJ - 13/11/04 - Fixed !part to fix bug #2614 (!part Parts the wrong channel)
+
+Modified: framework/trunk/ircbp.py
+===================================================================
+--- framework/trunk/ircbp.py	2004-11-13 07:43:45 UTC (rev 36)
++++ framework/trunk/ircbp.py	2004-11-13 08:25:02 UTC (rev 37)
+@@ -168,6 +168,23 @@
+ 	    print &quot;No match yet&quot;
+     return 0
+     print &quot;No matches&quot;
++    
++def remchan(CHANNEL):
++    print &quot;remchan Called&quot;
++    x = 0
++    print &quot;Starting the loop&quot;
++    while (len(channels)-1 &gt;= x):
++    	print &quot;The loop is checking if the channel is a match @ channels[&quot; + str(x) + &quot;] which is &quot; + channels[x]
++	if string.upper(channels[x]) == string.upper(CHANNEL):
++	    print &quot;We are in it!&quot;
++	    del channels[x]
++	    return 1
++	else:
++	    #Keep going!
++	    x = x+1
++	    print &quot;No match yet&quot;
++    return 0
++    print &quot;No matches&quot;
+ 
+ #def isusingprefix(INDATA,COMMAND):
+ #    print &quot;Checking if command has a set prefix in it&quot;
+@@ -264,6 +281,13 @@
+ 		    # They don't have privledges!
+ 		    irccommand(&quot;PRIVMSG &quot; + CHANNEL + &quot; :No privledges for this command!&quot;)
+ 
++	    if string.upper(string.lstrip(msg[3], ':')) == string.upper('!list'):
++		    x = 0
++		    print &quot;Starting the loop&quot;
++		    while (len(channels)-1 &gt;= x):
++			irccommand(&quot;PRIVMSG &quot; + CHANNEL + &quot; :I am in: &quot; + channels[x])
++			x = x+1
++		    
+ 	    # Join Command
+ 
+ 	    if string.upper(string.lstrip(msg[3], ':')) == string.upper('!join'):
+@@ -302,15 +326,19 @@
+             # Part Command
+ 
+ 	    if string.upper(string.lstrip(msg[3], ':')) == string.upper('!part'):
+-                partmessage = ' '.join(msg[4:])
+ 		if privcheck(HOSTMASK):
+-		    print &quot;Parting!&quot;
+-		    irccommand(&quot;PRIVMSG &quot; + CHANNEL + &quot; :buh-bye now! =)&quot;)
+-		    irccommand(&quot;PART &quot; + CHANNEL + &quot; :Part from %s&quot; % nick_name)
+-		elif privcheck(HOSTMASK):
+-                    print &quot;Parting!&quot;
+-                    irccommand(&quot;PRIVMSG &quot; + CHANNEL + &quot; :buh-bye now! =)&quot;)
+-		    irccommand(&quot;PART &quot; + CHANNEL + &quot; %s&quot; % partmessage)
++		    if len(msg) &gt; 4:
++			if msg[4][0] == &quot;#&quot;:
++			    print &quot;Parting!&quot;
++			    irccommand(&quot;PRIVMSG &quot; + msg[4] + &quot; :buh-bye now! =)&quot;)
++			    irccommand(&quot;PART &quot; + msg[4] + &quot; :Part from %s&quot; % nick_name)
++			    remchan(msg[4])
++			else:
++			    irccommand(&quot;PRIVMSG &quot; + CHANNEL + &quot; :&quot; + msg[4] + &quot; is not a channel&quot;)
++		    else:
++			irccommand(&quot;PRIVMSG &quot; + CHANNEL + &quot; :buh-bye now! =)&quot;)
++			irccommand(&quot;PART &quot; + CHANNEL + &quot; :Part from %s&quot; % nick_name)
++			remchan(CHANNEL)
+ 		else:
+ 		    # Oh dear they tried to part our bot!
+ 		    irccommand(&quot;PRIVMSG &quot; + CHANNEL + &quot; :No privledges for this command!&quot;)
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000031.html">[ircbp-commits] IRCBP -  r36 - in website/trunk: . includes
+</A></li>
+	<LI>Next message: <A HREF="000033.html">[ircbp-commits] IRCBP -  r38 - framework/trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#32">[ date ]</a>
+              <a href="thread.html#32">[ thread ]</a>
+              <a href="subject.html#32">[ subject ]</a>
+              <a href="author.html#32">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/ircbp-commits">More information about the ircbp-commits
+mailing list</a><br>
+</body></html>

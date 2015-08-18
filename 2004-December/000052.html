@@ -1,0 +1,261 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+ <HEAD>
+   <TITLE> [ircbp-commits] IRCBP -  r57 - framework/trunk
+   </TITLE>
+   <LINK REL="Index" HREF="http://lists.berlios.de/pipermail/ircbp-commits/2004-December/index.html" >
+   <LINK REL="made" HREF="mailto:ircbp-commits%40lists.berlios.de?Subject=Re%3A%20%5Bircbp-commits%5D%20IRCBP%20-%20%20r57%20-%20framework/trunk&In-Reply-To=%3C200412071020.iB7AKZTE003926%40sheep.berlios.de%3E">
+   <META NAME="robots" CONTENT="index,nofollow">
+   <style type="text/css">
+       pre {
+           white-space: pre-wrap;       /* css-2.1, curent FF, Opera, Safari */
+           }
+   </style>
+   <META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+   <LINK REL="Previous"  HREF="000051.html">
+   <LINK REL="Next"  HREF="000053.html">
+ </HEAD>
+ <BODY BGCOLOR="#ffffff">
+   <H1>[ircbp-commits] IRCBP -  r57 - framework/trunk</H1>
+    <B>nigelj at berlios.de</B> 
+    <A HREF="mailto:ircbp-commits%40lists.berlios.de?Subject=Re%3A%20%5Bircbp-commits%5D%20IRCBP%20-%20%20r57%20-%20framework/trunk&In-Reply-To=%3C200412071020.iB7AKZTE003926%40sheep.berlios.de%3E"
+       TITLE="[ircbp-commits] IRCBP -  r57 - framework/trunk">nigelj at berlios.de
+       </A><BR>
+    <I>Tue Dec  7 11:20:35 CET 2004</I>
+    <P><UL>
+        <LI>Previous message: <A HREF="000051.html">[ircbp-commits] IRCBP -  r56 - framework/trunk
+</A></li>
+        <LI>Next message: <A HREF="000053.html">[ircbp-commits] IRCBP -  r58 - framework/trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#52">[ date ]</a>
+              <a href="thread.html#52">[ thread ]</a>
+              <a href="subject.html#52">[ subject ]</a>
+              <a href="author.html#52">[ author ]</a>
+         </LI>
+       </UL>
+    <HR>  
+<!--beginarticle-->
+<PRE>Author: nigelj
+Date: 2004-12-07 11:20:34 +0100 (Tue, 07 Dec 2004)
+New Revision: 57
+
+Modified:
+   framework/trunk/CHANGELOG
+   framework/trunk/create_config.sql
+   framework/trunk/ircbp.py
+   framework/trunk/ircbpconfig.py
+Log:
+WARNING - THIS COMMIT HAS KNOWN BUGS
+NJ - 07/12/04 - 433 numeric now handled - means that it append a _ to ircbpconfig.NICKNAME and send a NICK command to the server until it is allowed
+NJ - 07/12/04 - 376 numeric now handled - When the server gets the 376 (END OF MOTD) numeric it will THEN send Nickserv Identification and Join requested channels.
+NJ - 07/12/04 - Implemented db-based channels and users to the bot.
+NJ - 07/12/04 - Fixed comments in ircbpconfig.py (to make it clearer in the fact you only need to edit the SQL settings now).
+
+Modified: framework/trunk/CHANGELOG
+===================================================================
+--- framework/trunk/CHANGELOG	2004-12-06 05:07:04 UTC (rev 56)
++++ framework/trunk/CHANGELOG	2004-12-07 10:20:34 UTC (rev 57)
+@@ -69,3 +69,7 @@
+ NJ - 06/12/04 - Made a small optimization in ircbpconfig.py to incorporate the DB handling to end result into 1 line (instead of two) and only two varibles, looking for more to be made currently.
+ NJ - 06/12/04 - Remade create_config.sql (this time from phpMyAdmin).  Now also drops existing table (if any) so PLEASE watch out!
+ NJ - 06/12/04 - Limited SQL query to one result which should prevent problems.
++NJ - 07/12/04 - 433 numeric now handled - means that it append a _ to ircbpconfig.NICKNAME and send a NICK command to the server until it is allowed
++NJ - 07/12/04 - 376 numeric now handled - When the server gets the 376 (END OF MOTD) numeric it will THEN send Nickserv Identification and Join requested channels.
++NJ - 07/12/04 - Implemented db-based channels and users to the bot.
++NJ - 07/12/04 - Fixed comments in ircbpconfig.py (to make it clearer in the fact you only need to edit the SQL settings now).
+
+Modified: framework/trunk/create_config.sql
+===================================================================
+--- framework/trunk/create_config.sql	2004-12-06 05:07:04 UTC (rev 56)
++++ framework/trunk/create_config.sql	2004-12-07 10:20:34 UTC (rev 57)
+@@ -1,4 +1,21 @@
+ -- 
++-- Table structure for table `channels`
++-- 
++
++DROP TABLE IF EXISTS `channels`;
++CREATE TABLE IF NOT EXISTS `channels` (
++  `channel` varchar(30) NOT NULL default ''
++) TYPE=MyISAM;
++
++-- 
++-- Dumping data for table `channels`
++-- 
++
++INSERT INTO `channels` VALUES ('#channel');
++
++-- --------------------------------------------------------
++
++-- 
+ -- Table structure for table `config`
+ -- 
+ 
+@@ -18,3 +35,20 @@
+ -- 
+ 
+ INSERT INTO `config` VALUES ('IRCBP', 'The Internet Relay Chat Bot Project', '', 'irc.freenode.net', 6667, '', 0x31);
++
++-- --------------------------------------------------------
++
++-- 
++-- Table structure for table `users`
++-- 
++
++DROP TABLE IF EXISTS `users`;
++CREATE TABLE IF NOT EXISTS `users` (
++  `mask` text NOT NULL
++) TYPE=MyISAM;
++
++-- 
++-- Dumping data for table `users`
++-- 
++
++INSERT INTO `users` VALUES ('*!*@*');
+
+Modified: framework/trunk/ircbp.py
+===================================================================
+--- framework/trunk/ircbp.py	2004-12-06 05:07:04 UTC (rev 56)
++++ framework/trunk/ircbp.py	2004-12-07 10:20:34 UTC (rev 57)
+@@ -34,11 +34,10 @@
+ # CODE STARTS HERE								#
+ # It is strongly recommended that you do not touch anything below this point!	#
+ #################################################################################
+-
++#print ircbpconfig.SERVER
+ # This basic socket will provide 1 connection to an IRC Server, in future we can most likely man it into an array
+ # of sockets
+ IRC = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+-
+ #open a connection with the server
+ def srvconnect():
+     IRC.connect((ircbpconfig.SERVER, ircbpconfig.PORT))
+@@ -150,8 +149,7 @@
+ 
+ srvconnect()
+ irclogin()
+-sendnickserv()
+-dojoins()
++
+ #
+ #while (1):
+ ##    buffer = IRC.recv(1024)
+@@ -321,6 +319,13 @@
+                 print &quot;This is work in process&quot;
+         if msg[1] == 'KICK':
+             irccommand(&quot;JOIN &quot; + msg[2])
++        #Wait until end of MOTD to do nickserv stuff and joins.
++        if msg[1] == '376':
++            sendnickserv()
++            dojoins()
++        if msg[1] == '433':
++            ircbpconfig.NICKNAME = msg[3] + &quot;_&quot;
++            irccommand(&quot;NICK :&quot; + ircbpconfig.NICKNAME)
+         #Join Blocking Modes
+         if msg[1] == '467' or msg[1] == '471' or msg[1] == '473' or msg[1] == '474' or msg[1] == '475':
+             #We can't join channels that are invite only
+
+Modified: framework/trunk/ircbpconfig.py
+===================================================================
+--- framework/trunk/ircbpconfig.py	2004-12-06 05:07:04 UTC (rev 56)
++++ framework/trunk/ircbpconfig.py	2004-12-07 10:20:34 UTC (rev 57)
+@@ -24,46 +24,50 @@
+ # GPL Document can also be found in the same directory as this file as &quot;LICENSE&quot;			#
+ #########################################################################################################
+ 
+-# Introduce Arrays for Users/Channels and Prefixes
++# Don't edit the following &quot;import&quot; line!
+ 
+ import _mysql
+ 
+-privledged = []
+-channels = []
+-prefixes = []
+ 
++
+ class mysqlconfig:
++    # EDIT THE FOLLOWING LINE TO THE NAME OF YOUR SQL HOST
+     SQLHOST = 'localhost'
++    # EDIT THE FOLLOWING LINE TO THE NAME OF YOUR SQL USER
+     SQLUSER = 'IRCBP'
++    # EDIT THE FOLLOWING LINE TO THE PASSWORD OF YOUR SQL USER
+     SQLPASS = ''
++    # EDIT THE FOLLOWING LINE TO THE PORT USED BY YOUR SQL SERVER
+     SQLPORT = 3306
+ 
++    
++# DO NOT EDIT ANYTHING MORE 
++
++# SQL Connection
++
+ sqlconfig = mysqlconfig()
+ 
++# Connecting...
++
+ db=_mysql.connect(host=sqlconfig.SQLHOST, user=sqlconfig.SQLUSER, passwd=sqlconfig.SQLPASS, db='IRCBP', port=sqlconfig.SQLPORT)
+ 
++# Main configuration!
++
+ db.query(&quot;&quot;&quot;SELECT * from config LIMIT 0 , 1&quot;&quot;&quot;)
+ configprops=db.use_result().fetch_row()
+ 
++# Channels we join!
+ 
+-# Add functions for Users/Channels and Prefixes
+-def addmask(HOSTMASK):
+-    privledged.append(HOSTMASK)
++db.query(&quot;&quot;&quot;SELECT * from channels&quot;&quot;&quot;)
++prechannels=db.store_result()
++channels=[c[0] for c in prechannels.fetch_row(prechannels.num_rows())]
+ 
+-def addchan(CHANNEL):
+-    channels.append(CHANNEL)
++# Now from privledged users!
+ 
+-def addprefix(PREFIX):
+-    prefixes.append(PREFIX)
++db.query(&quot;&quot;&quot;SELECT * from users&quot;&quot;&quot;)
++preprivs=db.store_result()
++privledged=[c[0] for c in preprivs.fetch_row(prechannels.num_rows())]
+ 
+-#CONFIG IS HERE
+-    
+-addmask('*!*@*')
+-  
+-# Channels that the bot will join by default
+- 
+-addchan('#IRCBP')
+-addchan('#newzealand')
+ 
+ # Bot Nickname and Realname (Must not be null) for the IRC Bot to use
+     
+@@ -89,3 +93,5 @@
+ # 1 if using a IRCd that you are connecting to is DancerIRCd (Freenode for example)
+ # 0 if not
+ DANCERMODE = int(configprops[0][6])
++
++
+
+
+</PRE>
+
+<!--endarticle-->
+    <HR>
+    <P><UL>
+        <!--threads-->
+	<LI>Previous message: <A HREF="000051.html">[ircbp-commits] IRCBP -  r56 - framework/trunk
+</A></li>
+	<LI>Next message: <A HREF="000053.html">[ircbp-commits] IRCBP -  r58 - framework/trunk
+</A></li>
+         <LI> <B>Messages sorted by:</B> 
+              <a href="date.html#52">[ date ]</a>
+              <a href="thread.html#52">[ thread ]</a>
+              <a href="subject.html#52">[ subject ]</a>
+              <a href="author.html#52">[ author ]</a>
+         </LI>
+       </UL>
+
+<hr>
+<a href="https://lists.berlios.de/mailman/listinfo/ircbp-commits">More information about the ircbp-commits
+mailing list</a><br>
+</body></html>
